@@ -70,11 +70,6 @@
           "icon": "x-twitter"
         },
         {
-          "anchor": "API Status",
-          "href": "https://status.polyrouter.io",
-          "icon": "chart-line"
-        },
-        {
           "anchor": "Get API Key",
           "href": "https://polyrouter.io",
           "icon": "key"
@@ -89,8 +84,8 @@
   "navbar": {
     "links": [
       {
-        "label": "Support",
-        "href": "mailto:support@polyrouter.io"
+        "label": "Questions? Email us",
+        "href": "mailto:hello@polyrouter.io"
       }
     ],
     "primary": {
