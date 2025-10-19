@@ -2322,8 +2322,7 @@
         "type": "apiKey",
         "in": "header",
         "name": "X-API-Key",
-        "description": "API key for authentication",
-        "x-default": "pk_53c6cae9c350b99ccc70371fa54653f7766a67f2fc34032c3dca92912961a562"
+        "description": "API key for authentication"
       }
     },
     "schemas": {
