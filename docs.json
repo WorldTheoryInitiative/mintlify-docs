@@ -7,7 +7,7 @@
     "light": "#FFB732",
     "dark": "#CC8400"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
   "api": {
     "playground": {
       "display": "interactive",
@@ -21,11 +21,12 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Introduction",
             "pages": [
+              "index",
               "api-reference/introduction"
             ]
           },
@@ -59,14 +60,24 @@
     "global": {
       "anchors": [
         {
+          "anchor": "Discord",
+          "href": "https://discord.gg/fyagg92CVM",
+          "icon": "discord"
+        },
+        {
+          "anchor": "X (Twitter)",
+          "href": "https://x.com/polyrouter",
+          "icon": "x-twitter"
+        },
+        {
           "anchor": "API Status",
           "href": "https://status.polyrouter.io",
           "icon": "chart-line"
         },
         {
-          "anchor": "Blog",
+          "anchor": "Get API Key",
           "href": "https://polyrouter.io",
-          "icon": "newspaper"
+          "icon": "key"
         }
       ]
     }
@@ -85,7 +96,7 @@
     "primary": {
       "type": "button",
       "label": "Get API Key",
-      "href": "https://polyrouter.io/api-keys"
+      "href": "https://polyrouter.io/"
     }
   },
   "contextual": {
@@ -102,7 +113,7 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/polyrouter_io",
+      "x": "https://x.com/polyrouter",
       "github": "https://github.com/polyrouter-io",
       "linkedin": "https://linkedin.com/company/polyrouter"
     }
