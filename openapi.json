@@ -1058,47 +1058,25 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi", "limitless"]
+              "enum": ["polymarket", "kalshi"]
             }
           },
           {
-            "name": "search",
+            "name": "include_raw",
             "in": "query",
-            "description": "Search events by title/description",
+            "description": "Include raw data from the platform API",
             "required": false,
             "schema": {
-              "type": "string"
+              "type": "boolean"
             }
           },
           {
-            "name": "min_volume",
+            "name": "with_nested_markets",
             "in": "query",
-            "description": "Filter events with minimum total volume",
+            "description": "Include nested markets in the response",
             "required": false,
             "schema": {
-              "type": "number",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "max_volume",
-            "in": "query",
-            "description": "Filter events with maximum total volume",
-            "required": false,
-            "schema": {
-              "type": "number",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort order",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["created_desc", "created_asc", "event_start_desc", "event_start_asc", "event_end_desc", "event_end_asc"],
-              "default": "event_start_asc"
+              "type": "boolean"
             }
           },
           {
@@ -1133,7 +1111,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "markets": {
+                    "events": {
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/EventV2"
@@ -1194,6 +1172,24 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "include_raw",
+            "in": "query",
+            "description": "Include raw data from the platform API",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "with_nested_markets",
+            "in": "query",
+            "description": "Include nested markets in the response",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1204,7 +1200,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "markets": {
+                    "events": {
                       "type": "array",
                       "items": {
                         "$ref": "#/components/schemas/EventV2"
@@ -1260,81 +1256,21 @@
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless, manifold",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi", "limitless"]
+              "enum": ["polymarket", "kalshi", "limitless", "manifold"]
             }
           },
           {
             "name": "status",
             "in": "query",
-            "description": "Filter by market status (comma-separated): open, closed, resolved, paused",
+            "description": "Filter by market status (comma-separated): open, closed",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["open", "closed", "resolved", "paused"]
-            }
-          },
-          {
-            "name": "start_date_min",
-            "in": "query",
-            "description": "Filter markets starting after this date (ISO 8601)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "start_date_max",
-            "in": "query",
-            "description": "Filter markets starting before this date (ISO 8601)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "end_date_min",
-            "in": "query",
-            "description": "Filter markets ending after this date (ISO 8601)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "end_date_max",
-            "in": "query",
-            "description": "Filter markets ending before this date (ISO 8601)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort order",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["volume_desc", "volume_asc", "created_desc", "created_asc"],
-              "default": "volume_desc"
-            }
-          },
-          {
-            "name": "market_id",
-            "in": "query",
-            "description": "Get specific market by ID (alternative to path-based lookup)",
-            "required": false,
-            "schema": {
-              "type": "string"
+              "enum": ["open", "closed"]
             }
           },
           {
@@ -1346,7 +1282,7 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 100,
-              "default": 10
+              "default": 5
             }
           },
           {
@@ -1358,6 +1294,15 @@
               "type": "integer",
               "minimum": 0,
               "default": 0
+            }
+          },
+          {
+            "name": "include_raw",
+            "in": "query",
+            "description": "Include raw data from the platform API",
+            "required": false,
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -1429,6 +1374,15 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "include_raw",
+            "in": "query",
+            "description": "Include raw data from the platform API",
+            "required": false,
+            "schema": {
+              "type": "boolean"
             }
           }
         ],
@@ -1658,11 +1612,20 @@
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless, manifold",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi", "limitless"]
+              "enum": ["polymarket", "kalshi", "limitless", "manifold"]
+            }
+          },
+          {
+            "name": "include_raw",
+            "in": "query",
+            "description": "Include raw data from the platform API",
+            "required": false,
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -1762,41 +1725,20 @@
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi", "limitless"]
+              "enum": ["polymarket", "kalshi"]
             }
           },
           {
-            "name": "category",
+            "name": "include_raw",
             "in": "query",
-            "description": "Filter by categories (comma-separated): politics, sports, crypto, economics, technology, weather, other",
+            "description": "Include raw data from the platform API",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": ["politics", "sports", "crypto", "economics", "technology", "weather", "other"]
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "Search series by title/description",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort order",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["title_asc", "title_desc", "created_asc", "created_desc", "volume_asc", "volume_desc"],
-              "default": "title_asc"
+              "type": "boolean"
             }
           },
           {
@@ -1892,6 +1834,15 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "include_raw",
+            "in": "query",
+            "description": "Include raw data from the platform API",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1953,26 +1904,16 @@
       "get": {
         "tags": ["Sports API v1"],
         "summary": "Get league information",
-        "description": "Retrieve league metadata and team information with platform-specific ID mappings. This endpoint provides canonical team identifiers (PolyRouter IDs) used across all sports endpoints.",
+        "description": "Retrieve league metadata and team information with platform-specific ID mappings. This endpoint provides canonical team identifiers (PolyRouter IDs) used across all sports endpoints. Supports NFL (fully operational), NBA, NHL, and MLB (limited - registry only).",
         "parameters": [
           {
             "name": "league",
             "in": "query",
-            "description": "Filter by specific league (e.g., nfl)",
+            "description": "Filter by specific league. Returns all leagues if not specified.",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["nfl"]
-            }
-          },
-          {
-            "name": "include_teams",
-            "in": "query",
-            "description": "Include team details in response",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": true
+              "enum": ["nfl", "nba", "nhl", "mlb"]
             }
           }
         ],
@@ -2139,11 +2080,11 @@
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi, prophetx, novig",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi, prophetx, novig, sxbet",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi", "prophetx", "novig"]
+              "enum": ["polymarket", "kalshi", "prophetx", "novig", "sxbet"]
             }
           },
           {
@@ -2197,11 +2138,11 @@
         }
       }
     },
-    "/awards-v1": {
+    "/list-awards-v1": {
       "get": {
         "tags": ["Sports API v1"],
-        "summary": "Get sports awards markets",
-        "description": "Retrieve real-time sports award markets (MVP, Rookie of the Year, etc.) with odds from multiple prediction market platforms.",
+        "summary": "List available awards",
+        "description": "Retrieve a directory of all available sports awards with their IDs and metadata. Use this endpoint to discover award IDs for the Awards API v1.",
         "parameters": [
           {
             "name": "league",
@@ -2210,7 +2151,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["nfl"]
+              "enum": ["nfl", "nba", "nhl", "mlb"]
             }
           },
           {
@@ -2219,8 +2160,7 @@
             "description": "Filter by award type",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": ["mvp", "opoy", "dpoy", "oroy", "droy", "cpoy", "coy", "superbowl"]
+              "type": "string"
             }
           },
           {
@@ -2232,15 +2172,177 @@
               "type": "integer",
               "default": 2025
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Awards list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "awards": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/AwardListItem"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/Pagination"
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "league": {
+                              "type": "string"
+                            },
+                            "data_freshness": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/list-futures-v1": {
+      "get": {
+        "tags": ["Sports API v1"],
+        "summary": "List available futures",
+        "description": "Retrieve a directory of all available sports futures with their IDs and metadata. Use this endpoint to discover future IDs for the Futures API v1.",
+        "parameters": [
+          {
+            "name": "league",
+            "in": "query",
+            "description": "League ID (required)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["nfl", "nba", "nhl", "mlb"]
+            }
+          },
+          {
+            "name": "future_type",
+            "in": "query",
+            "description": "Filter by future type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["championship", "division", "conference"]
+            }
+          },
+          {
+            "name": "season",
+            "in": "query",
+            "description": "Season year",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 2025
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Futures list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "futures": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/FutureListItem"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/Pagination"
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "league": {
+                              "type": "string"
+                            },
+                            "data_freshness": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/awards-v1/{award_id}": {
+      "get": {
+        "tags": ["Sports API v1"],
+        "summary": "Get award odds",
+        "description": "Retrieve real-time odds for a specific award (MVP, Rookie of the Year, etc.) from multiple prediction market platforms using award ID.",
+        "parameters": [
+          {
+            "name": "award_id",
+            "in": "path",
+            "description": "Award identifier (format: {league}_{award_type}_{season})",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "nfl_mvp_2025"
+            }
           },
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated)",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi", "prophetx"]
+              "enum": ["polymarket", "kalshi"]
             }
           },
           {
@@ -2252,29 +2354,6 @@
               "type": "string",
               "enum": ["american", "decimal", "probability"],
               "default": "american"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of results per page (1-100)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 10
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "description": "Pagination offset",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
             }
           }
         ],
@@ -2314,6 +2393,175 @@
           }
         }
       }
+    },
+    "/futures-v1/{future_id}": {
+      "get": {
+        "tags": ["Sports API v1"],
+        "summary": "Get futures odds",
+        "description": "Retrieve real-time odds for a specific futures market (championships, divisions, conferences) from multiple prediction market platforms using future ID.",
+        "parameters": [
+          {
+            "name": "future_id",
+            "in": "path",
+            "description": "Future identifier (format: {league}_{future_type}_{season})",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "nfl_superbowl_2025"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi, sxbet",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["polymarket", "kalshi", "sxbet"]
+            }
+          },
+          {
+            "name": "odds_format",
+            "in": "query",
+            "description": "Odds format",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["american", "decimal", "probability"],
+              "default": "american"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Futures markets retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "futures": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Future"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/platforms-v2": {
+      "get": {
+        "tags": ["Platform"],
+        "summary": "Get platform information",
+        "description": "Retrieve comprehensive information about all supported platforms, their capabilities, features, and real-time health status. This endpoint provides platform discovery, feature detection, ID format specifications, and health monitoring for both market and sports platforms.",
+        "responses": {
+          "200": {
+            "description": "Platform information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markets": {
+                      "type": "object",
+                      "properties": {
+                        "platforms": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/MarketPlatform"
+                          }
+                        },
+                        "health": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string",
+                            "enum": ["healthy", "degraded", "unavailable"]
+                          },
+                          "description": "Health status for each market platform"
+                        },
+                        "total_platforms": {
+                          "type": "number",
+                          "description": "Total number of market platforms"
+                        }
+                      }
+                    },
+                    "sports": {
+                      "type": "object",
+                      "properties": {
+                        "platforms": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SportsPlatform"
+                          }
+                        },
+                        "health": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string",
+                            "enum": ["healthy", "degraded", "unavailable"]
+                          },
+                          "description": "Health status for each sports platform"
+                        },
+                        "total_platforms": {
+                          "type": "number",
+                          "description": "Total number of sports platforms"
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "request_time": {
+                          "type": "number",
+                          "description": "Request processing time (ms)"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Response timestamp"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "API version"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2337,7 +2585,7 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Source platform"
           },
           "platform_id": {
@@ -2481,7 +2729,7 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Source platform"
           },
           "platform_id": {
@@ -2624,7 +2872,7 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Source platform"
           },
           "title": {
@@ -2719,7 +2967,7 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Source platform"
           },
           "platform_id": {
@@ -2820,7 +3068,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Platform identifier"
           },
           "name": {
@@ -3039,7 +3287,7 @@
         "properties": {
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Platform to sync"
           }
         }
@@ -3054,7 +3302,7 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Source platform"
           },
           "platform_id": {
@@ -3126,7 +3374,7 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Source platform"
           },
           "platform_id": {
@@ -3383,7 +3631,7 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Source platform"
           },
           "platform_id": {
@@ -3441,7 +3689,7 @@
           },
           "platform": {
             "type": "string",
-            "enum": ["polymarket", "kalshi", "limitless"],
+            "enum": ["polymarket", "kalshi", "limitless", "manifold"],
             "description": "Source platform"
           },
           "platform_id": {
@@ -3614,6 +3862,10 @@
               "novig": {
                 "type": "string",
                 "description": "Novig team identifier"
+              },
+              "sxbet": {
+                "type": "string",
+                "description": "SX.bet team identifier"
               }
             }
           },
@@ -3898,6 +4150,392 @@
           "metadata": {
             "type": "object",
             "description": "Award metadata and platform-specific info"
+          }
+        }
+      },
+      "AwardListItem": {
+        "type": "object",
+        "required": ["id", "award_name", "league", "season", "award_type", "platforms"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Award identifier",
+            "example": "nfl_mvp_2025"
+          },
+          "award_name": {
+            "type": "string",
+            "description": "Full award name",
+            "example": "NFL MVP"
+          },
+          "league": {
+            "type": "string",
+            "description": "League identifier",
+            "example": "nfl"
+          },
+          "season": {
+            "type": "integer",
+            "description": "Season year",
+            "example": 2025
+          },
+          "award_type": {
+            "type": "string",
+            "description": "Award type code",
+            "example": "mvp"
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Platforms with configured markets"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "deadline": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Award deadline"
+              },
+              "description": {
+                "type": "string",
+                "description": "Award description"
+              },
+              "eligibility": {
+                "type": "string",
+                "description": "Eligibility criteria"
+              }
+            }
+          }
+        }
+      },
+      "Future": {
+        "type": "object",
+        "required": ["id", "future_name", "league", "season", "future_type", "category", "markets"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Future identifier",
+            "example": "nfl_superbowl_2025"
+          },
+          "future_name": {
+            "type": "string",
+            "description": "Full future name",
+            "example": "Super Bowl LX Winner"
+          },
+          "league": {
+            "type": "string",
+            "description": "League identifier",
+            "example": "nfl"
+          },
+          "season": {
+            "type": "integer",
+            "description": "Season year",
+            "example": 2025
+          },
+          "future_type": {
+            "type": "string",
+            "description": "Future type",
+            "enum": ["championship", "division", "conference"],
+            "example": "championship"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category",
+            "example": "team"
+          },
+          "markets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "platform": {
+                  "type": "string",
+                  "description": "Platform name"
+                },
+                "market_id": {
+                  "type": "string",
+                  "description": "Platform-specific market identifier"
+                },
+                "outcomes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "team_polyrouter_id": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "PolyRouter team ID"
+                      },
+                      "outcome_name": {
+                        "type": "string",
+                        "description": "Team name"
+                      },
+                      "odds": {
+                        "type": "object",
+                        "properties": {
+                          "american": {
+                            "type": "string",
+                            "description": "American odds"
+                          },
+                          "decimal": {
+                            "type": "number",
+                            "description": "Decimal odds"
+                          },
+                          "implied_probability": {
+                            "type": "number",
+                            "description": "Implied probability"
+                          }
+                        }
+                      },
+                      "volume_24h": {
+                        "type": "number",
+                        "description": "24-hour trading volume"
+                      },
+                      "last_trade_price": {
+                        "type": "number",
+                        "description": "Last trade price (0-1)"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "description": "Platform-specific metadata"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Future metadata and platform-specific info"
+          }
+        }
+      },
+      "FutureListItem": {
+        "type": "object",
+        "required": ["id", "future_name", "league", "season", "future_type", "category", "platforms"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Future identifier",
+            "example": "nfl_superbowl_2025"
+          },
+          "future_name": {
+            "type": "string",
+            "description": "Full future name",
+            "example": "Super Bowl LX Winner"
+          },
+          "league": {
+            "type": "string",
+            "description": "League identifier",
+            "example": "nfl"
+          },
+          "season": {
+            "type": "integer",
+            "description": "Season year",
+            "example": 2025
+          },
+          "future_type": {
+            "type": "string",
+            "description": "Future type",
+            "enum": ["championship", "division", "conference"],
+            "example": "championship"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category",
+            "example": "team"
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Platforms with configured markets"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "deadline": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Future deadline"
+              },
+              "description": {
+                "type": "string",
+                "description": "Future description"
+              },
+              "eligible_teams": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Eligible team IDs"
+              }
+            }
+          }
+        }
+      },
+      "MarketPlatform": {
+        "type": "object",
+        "required": ["platform", "display_name", "endpoints", "features", "id_format", "base_url", "rate_limit"],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Platform identifier (lowercase)",
+            "example": "polymarket"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable platform name",
+            "example": "Polymarket"
+          },
+          "endpoints": {
+            "type": "object",
+            "properties": {
+              "markets": {
+                "type": "boolean",
+                "description": "Supports Markets-v2 endpoint"
+              },
+              "events": {
+                "type": "boolean",
+                "description": "Supports Events-v2 endpoint"
+              },
+              "series": {
+                "type": "boolean",
+                "description": "Supports Series-v2 endpoint"
+              },
+              "search": {
+                "type": "boolean",
+                "description": "Supports Search-v2 endpoint"
+              },
+              "price_history": {
+                "type": "boolean",
+                "description": "Supports Price History-v2 endpoint"
+              }
+            }
+          },
+          "features": {
+            "type": "object",
+            "properties": {
+              "status_filtering": {
+                "type": "boolean",
+                "description": "Supports filtering by market status"
+              },
+              "date_filtering": {
+                "type": "boolean",
+                "description": "Supports filtering by date ranges"
+              },
+              "pagination_type": {
+                "type": "string",
+                "enum": ["offset", "cursor"],
+                "description": "Pagination method"
+              },
+              "market_types": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Supported market types"
+              }
+            }
+          },
+          "id_format": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": "Human-readable description of ID format"
+              },
+              "example": {
+                "type": "string",
+                "description": "Example market ID"
+              },
+              "pattern": {
+                "type": "string",
+                "description": "Regular expression pattern for validation"
+              }
+            }
+          },
+          "base_url": {
+            "type": "string",
+            "description": "Platform's base API URL",
+            "example": "https://gamma-api.polymarket.com"
+          },
+          "rate_limit": {
+            "type": "string",
+            "description": "Rate limit information",
+            "example": "100 req/min"
+          }
+        }
+      },
+      "SportsPlatform": {
+        "type": "object",
+        "required": ["platform", "display_name", "endpoints", "features", "rate_limit"],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Platform identifier (lowercase)",
+            "example": "polymarket"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable platform name",
+            "example": "Polymarket Sports"
+          },
+          "endpoints": {
+            "type": "object",
+            "properties": {
+              "awards": {
+                "type": "boolean",
+                "description": "Supports Awards-v1 endpoint"
+              },
+              "games": {
+                "type": "boolean",
+                "description": "Supports Games-v1 endpoint"
+              },
+              "list_games": {
+                "type": "boolean",
+                "description": "Supports List-Games-v1 endpoint"
+              },
+              "league_info": {
+                "type": "boolean",
+                "description": "Supports League-Info-v1 endpoint"
+              }
+            }
+          },
+          "features": {
+            "type": "object",
+            "properties": {
+              "odds_formats": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": ["american", "decimal", "probability"]
+                },
+                "description": "Supported odds formats"
+              },
+              "supported_leagues": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Supported sports leagues"
+              },
+              "market_types": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Supported market types"
+              }
+            }
+          },
+          "rate_limit": {
+            "type": "string",
+            "description": "Rate limit information",
+            "example": "100 req/min"
           }
         }
       }

@@ -31,13 +31,23 @@
             ]
           },
           {
+            "group": "Platform",
+            "openapi": "openapi.json",
+            "pages": [
+              "GET /platforms-v2"
+            ]
+          },
+          {
             "group": "Sports V1",
             "openapi": "openapi.json",
             "pages": [
               "GET /league-info-v1",
               "GET /list-games-v1",
               "GET /games-v1/{game_id}",
-              "GET /awards-v1"
+              "GET /list-awards-v1",
+              "GET /awards-v1/{award_id}",
+              "GET /list-futures-v1",
+              "GET /futures-v1/{future_id}"
             ]
           },
           {
