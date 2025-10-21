@@ -1045,7 +1045,7 @@
         }
       }
     },
-    "/events-v2": {
+    "/events": {
       "get": {
         "tags": ["v2"],
         "summary": "Get events",
@@ -1092,14 +1092,12 @@
             }
           },
           {
-            "name": "offset",
+            "name": "cursor",
             "in": "query",
-            "description": "Pagination offset",
+            "description": "Cursor for pagination",
             "required": false,
             "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
+              "type": "string"
             }
           }
         ],
@@ -1158,7 +1156,7 @@
         }
       }
     },
-    "/events-v2/{event_id}": {
+    "/events/{event_id}": {
       "get": {
         "tags": ["v2"],
         "summary": "Get event details",
@@ -1247,7 +1245,7 @@
         }
       }
     },
-    "/markets-v2": {
+    "/markets": {
       "get": {
         "tags": ["v2"],
         "summary": "Get markets",
@@ -1286,14 +1284,12 @@
             }
           },
           {
-            "name": "offset",
+            "name": "cursor",
             "in": "query",
-            "description": "Pagination offset",
+            "description": "Cursor for pagination",
             "required": false,
             "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
+              "type": "string"
             }
           },
           {
@@ -1361,7 +1357,7 @@
         }
       }
     },
-    "/markets-v2/{market_id}": {
+    "/markets/{market_id}": {
       "get": {
         "tags": ["v2"],
         "summary": "Get market details",
@@ -1441,11 +1437,11 @@
         }
       }
     },
-    "/price-history-v2": {
+    "/price-history": {
       "get": {
         "tags": ["v2"],
         "summary": "Get price history",
-        "description": "Retrieve historical price data using platform-specific market identifiers. This endpoint uses platform-native IDs and fetches data directly from platform APIs for improved performance.",
+        "description": "Retrieve historical price data using platform-specific market identifiers. This endpoint uses platform-native IDs and fetches data directly from platform APIs for improved performance. Currently, only Polymarket, Kalshi, and Limitless are supported.",
         "parameters": [
           {
             "name": "market_ids",
@@ -1592,7 +1588,7 @@
         }
       }
     },
-    "/search-v2": {
+    "/search": {
       "get": {
         "tags": ["v2"],
         "summary": "Search markets",
@@ -1626,38 +1622,6 @@
             "required": false,
             "schema": {
               "type": "boolean"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of results per page (1-50)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 50,
-              "default": 10
-            }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "description": "Page number for Polymarket pagination (starts at 1)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "description": "Cursor for Kalshi pagination",
-            "required": false,
-            "schema": {
-              "type": "string"
             }
           }
         ],
@@ -1716,7 +1680,7 @@
         }
       }
     },
-    "/series-v2": {
+    "/series": {
       "get": {
         "tags": ["v2"],
         "summary": "Get series",
@@ -1754,14 +1718,12 @@
             }
           },
           {
-            "name": "offset",
+            "name": "cursor",
             "in": "query",
-            "description": "Pagination offset",
+            "description": "Cursor for pagination",
             "required": false,
             "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
+              "type": "string"
             }
           }
         ],
@@ -1820,7 +1782,7 @@
         }
       }
     },
-    "/series-v2/{series_id}": {
+    "/series/{series_id}": {
       "get": {
         "tags": ["v2"],
         "summary": "Get series details",
@@ -1900,7 +1862,7 @@
         }
       }
     },
-    "/league-info-v1": {
+    "/league-info": {
       "get": {
         "tags": ["Sports API v1"],
         "summary": "Get league information",
@@ -1954,7 +1916,7 @@
         }
       }
     },
-    "/list-games-v1": {
+    "/list-games": {
       "get": {
         "tags": ["Sports API v1"],
         "summary": "List available games",
@@ -2011,17 +1973,6 @@
               "maximum": 100,
               "default": 10
             }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "description": "Pagination offset",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
-            }
           }
         ],
         "responses": {
@@ -2061,11 +2012,11 @@
         }
       }
     },
-    "/games-v1/{game_id}": {
+    "/games/{game_id}": {
       "get": {
         "tags": ["Sports API v1"],
         "summary": "Get game markets",
-        "description": "Retrieve detailed betting markets for a specific game from multiple platforms (Polymarket, Kalshi, ProphetX, Novig) using PolyRouter game ID.",
+        "description": "Retrieve detailed betting markets for a specific game from multiple platforms (Polymarket, Kalshi, ProphetX, Novig) using PolyRouter game ID. Keep in mind, Polymarket and Kalshi often make game markets available the day of, while ProphetX, Novig, and SXBET don't currently offer historical data.",
         "parameters": [
           {
             "name": "game_id",
@@ -2138,7 +2089,7 @@
         }
       }
     },
-    "/list-awards-v1": {
+    "/list-awards": {
       "get": {
         "tags": ["Sports API v1"],
         "summary": "List available awards",
@@ -2228,7 +2179,7 @@
         }
       }
     },
-    "/list-futures-v1": {
+    "/list-futures": {
       "get": {
         "tags": ["Sports API v1"],
         "summary": "List available futures",
@@ -2319,7 +2270,7 @@
         }
       }
     },
-    "/awards-v1/{award_id}": {
+    "/awards/{award_id}": {
       "get": {
         "tags": ["Sports API v1"],
         "summary": "Get award odds",
@@ -2394,7 +2345,7 @@
         }
       }
     },
-    "/futures-v1/{future_id}": {
+    "/futures/{future_id}": {
       "get": {
         "tags": ["Sports API v1"],
         "summary": "Get futures odds",
@@ -2413,11 +2364,11 @@
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi, sxbet",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi", "sxbet"]
+              "enum": ["polymarket", "kalshi"]
             }
           },
           {
@@ -2472,7 +2423,7 @@
         }
       }
     },
-    "/platforms-v2": {
+    "/platforms": {
       "get": {
         "tags": ["Platform"],
         "summary": "Get platform information",

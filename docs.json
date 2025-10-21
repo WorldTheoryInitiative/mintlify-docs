@@ -34,34 +34,34 @@
             "group": "Platform",
             "openapi": "openapi.json",
             "pages": [
-              "GET /platforms-v2"
+              "GET /platforms"
             ]
           },
           {
-            "group": "Sports V1",
+            "group": "Sports",
             "openapi": "openapi.json",
             "pages": [
-              "GET /league-info-v1",
-              "GET /list-games-v1",
-              "GET /games-v1/{game_id}",
-              "GET /list-awards-v1",
-              "GET /awards-v1/{award_id}",
-              "GET /list-futures-v1",
-              "GET /futures-v1/{future_id}"
+              "GET /league-info",
+              "GET /list-games",
+              "GET /games/{game_id}",
+              "GET /list-awards",
+              "GET /awards/{award_id}",
+              "GET /list-futures",
+              "GET /futures/{future_id}"
             ]
           },
           {
-            "group": "Markets V2",
+            "group": "Markets",
             "openapi": "openapi.json",
             "pages": [
-              "GET /events-v2",
-              "GET /events-v2/{event_id}",
-              "GET /markets-v2",
-              "GET /markets-v2/{market_id}",
-              "GET /price-history-v2",
-              "GET /search-v2",
-              "GET /series-v2",
-              "GET /series-v2/{series_id}"
+              "GET /events",
+              "GET /events/{event_id}",
+              "GET /markets",
+              "GET /markets/{market_id}",
+              "GET /price-history",
+              "GET /search",
+              "GET /series",
+              "GET /series/{series_id}"
             ]
           }
         ]
