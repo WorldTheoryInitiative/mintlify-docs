@@ -54,12 +54,23 @@
             "group": "Markets",
             "openapi": "openapi.json",
             "pages": [
-              "GET /events",
-              "GET /events/{event_id}",
               "GET /markets",
               "GET /markets/{market_id}",
-              "GET /price-history",
-              "GET /search",
+              "GET /price-history"
+            ]
+          },
+          {
+            "group": "Events",
+            "openapi": "openapi.json",
+            "pages": [
+              "GET /events",
+              "GET /events/{event_id}"
+            ]
+          },
+          {
+            "group": "Series",
+            "openapi": "openapi.json",
+            "pages": [
               "GET /series",
               "GET /series/{series_id}"
             ]

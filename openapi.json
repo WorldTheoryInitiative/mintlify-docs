@@ -1048,17 +1048,26 @@
     "/events": {
       "get": {
         "tags": ["v2"],
-        "summary": "Get events",
+        "summary": "List events",
         "description": "Retrieve real-time events across all supported platforms without database dependency. This endpoint directly proxies external platform APIs and returns data immediately for maximum freshness.",
         "parameters": [
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi",
             "required": false,
             "schema": {
               "type": "string",
               "enum": ["polymarket", "kalshi"]
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search markets by name or description",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -1248,7 +1257,7 @@
     "/markets": {
       "get": {
         "tags": ["v2"],
-        "summary": "Get markets",
+        "summary": "List markets",
         "description": "Retrieve real-time markets across all supported platforms without database dependency. This endpoint directly proxies external platform APIs and returns data immediately for maximum freshness.",
         "parameters": [
           {
@@ -1269,6 +1278,15 @@
             "schema": {
               "type": "string",
               "enum": ["open", "closed"]
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search markets by name or description",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           },
           {
@@ -1588,102 +1606,10 @@
         }
       }
     },
-    "/search": {
-      "get": {
-        "tags": ["v2"],
-        "summary": "Search markets",
-        "description": "Search across all supported platforms without database dependency. This endpoint directly queries external platform search APIs and aggregates results in a unified format.",
-        "parameters": [
-          {
-            "name": "query",
-            "in": "query",
-            "description": "Search query string (1-200 characters)",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 200
-            }
-          },
-          {
-            "name": "platform",
-            "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless, manifold",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["polymarket", "kalshi", "limitless", "manifold"]
-            }
-          },
-          {
-            "name": "include_raw",
-            "in": "query",
-            "description": "Include raw data from the platform API",
-            "required": false,
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Search results retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "markets": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/SearchResultV2"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "503": {
-            "description": "Platform unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "$ref": "#/components/schemas/Error"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
     "/series": {
       "get": {
         "tags": ["v2"],
-        "summary": "Get series",
+        "summary": "List series",
         "description": "Retrieve real-time series across all supported platforms without database dependency. This endpoint directly proxies external platform APIs and returns data immediately for maximum freshness.",
         "parameters": [
           {
@@ -1703,6 +1629,15 @@
             "required": false,
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search markets by name or description",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           },
           {
