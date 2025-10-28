@@ -1801,7 +1801,7 @@
       "get": {
         "tags": ["Sports API v1"],
         "summary": "Get league information",
-        "description": "Retrieve league metadata and team information with platform-specific ID mappings. This endpoint provides canonical team identifiers (PolyRouter IDs) used across all sports endpoints. Supports NFL (fully operational), NBA, NHL, and MLB (limited - registry only).",
+        "description": "Retrieve league metadata and team information with platform-specific ID mappings. This endpoint provides canonical team identifiers (PolyRouter IDs) used across all sports endpoints. Supports NFL, NBA, NHL, and MLB.",
         "parameters": [
           {
             "name": "league",
@@ -1810,7 +1810,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["nfl", "nba", "nhl", "mlb"]
+              "enum": ["nfl", "nba", "nhl", "mlb", ""]
             }
           }
         ],
@@ -1855,7 +1855,7 @@
       "get": {
         "tags": ["Sports API v1"],
         "summary": "List available games",
-        "description": "Retrieve a directory of all available NFL games with their PolyRouter IDs for use with the Games API.",
+        "description": "Retrieve a directory of all upcoming NFL, NBA, NHL, and MLB games with their PolyRouter IDs for use with the Games API.",
         "parameters": [
           {
             "name": "league",
@@ -1864,7 +1864,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["nfl"]
+              "enum": ["", "nfl", "nba", "nhl", "mlb"]
             }
           },
           {
@@ -1875,38 +1875,6 @@
             "schema": {
               "type": "string",
               "enum": ["not_started", "live", "finished"]
-            }
-          },
-          {
-            "name": "start_date",
-            "in": "query",
-            "description": "Filter games after this date (ISO 8601)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "end_date",
-            "in": "query",
-            "description": "Filter games before this date (ISO 8601)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of results per page (1-100)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 10
             }
           }
         ],
@@ -1951,16 +1919,16 @@
       "get": {
         "tags": ["Sports API v1"],
         "summary": "Get game markets",
-        "description": "Retrieve detailed betting markets for a specific game from multiple platforms (Polymarket, Kalshi, ProphetX, Novig) using PolyRouter game ID. Keep in mind, Polymarket and Kalshi often make game markets available the day of, while ProphetX, Novig, and SXBET don't currently offer historical data.",
+        "description": "Retrieve detailed betting markets for a specific game from multiple platforms (Polymarket, Kalshi, ProphetX, Novig, ProphetX) using PolyRouter game ID. Keep in mind, Polymarket and Kalshi often make game markets available the day of, while ProphetX, Novig, and SXBET don't currently offer historical data.",
         "parameters": [
           {
             "name": "game_id",
             "in": "path",
-            "description": "PolyRouter game ID (format: {AwayTeam}v{HomeTeam}{YYYYMMDD})",
+            "description": "PolyRouter game ID (format: {AwayTeam}v{HomeTeam}{YYYYMMDD}@{League})",
             "required": true,
             "schema": {
               "type": "string",
-              "example": "PITvBAL20251012"
+              "example": "PITvBAL20251012@NFL"
             }
           },
           {
@@ -1970,7 +1938,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi", "prophetx", "novig", "sxbet"]
+              "enum": ["","polymarket", "kalshi", "prophetx", "novig", "sxbet"]
             }
           },
           {
@@ -1980,7 +1948,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["moneyline", "spread", "total", "prop"]
+              "enum": ["","moneyline", "spread", "total", "prop"]
             }
           }
         ],
@@ -2037,7 +2005,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["nfl", "nba", "nhl", "mlb"]
+              "enum": ["","nfl", "nba", "nhl", "mlb"]
             }
           },
           {
@@ -2127,7 +2095,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["nfl", "nba", "nhl", "mlb"]
+              "enum": ["","nfl", "nba", "nhl", "mlb"]
             }
           },
           {
@@ -2228,7 +2196,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi"]
+              "enum": ["","polymarket", "kalshi"]
             }
           },
           {
@@ -2303,7 +2271,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["polymarket", "kalshi"]
+              "enum": ["","polymarket", "kalshi"]
             }
           },
           {
