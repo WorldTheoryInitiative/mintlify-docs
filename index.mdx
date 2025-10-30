@@ -17,7 +17,9 @@ description: "The unified API for prediction markets"
 ## What is PolyRouter?
 
 <Warning>
-  **Open Beta:** PolyRouter is currently in open beta. All features are free with 10 req/sec rate limits. We're actively improving the platform based on your feedback!
+  **Open Beta:** PolyRouter is currently in open beta. All features are free with 10 req/sec rate limits. We're actively improving the platform based on your feedback! 
+
+  MESSAGE **@fieldviolence** ON X IF YOU HAVE ANY QUESTIONS OR NEED HELP!
 </Warning>
 
 PolyRouter provides **unified API access to 7 prediction market platforms**: Polymarket, Kalshi, Manifold Markets, Limitless, ProphetX, Novig, and SX.bet. Get real-time market data, sports betting odds, and historical prices through one simple API.
@@ -56,13 +58,13 @@ PolyRouter provides **unified API access to 7 prediction market platforms**: Pol
 
 ```bash cURL
 curl "https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=5" \
-  -H "X-API-Key: YOUR_API_KEY"
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 ```javascript JavaScript
 const response = await fetch(
   'https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=5',
-  { headers: { 'X-API-Key': 'YOUR_API_KEY' } }
+  { headers: { 'X-API-Key': '5fa709a5-0634-44c3-a991-57166d3c376d' } }
 );
 
 const data = await response.json();
@@ -98,11 +100,11 @@ data.markets.forEach(market => {
 ```bash
 # Find today's games
 curl "https://api.polyrouter.io/functions/v1/list-games-v1?league=nfl&limit=5" \
-  -H "X-API-Key: YOUR_API_KEY"
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 
 # Get odds for a specific game
 curl "https://api.polyrouter.io/functions/v1/games-v1/BUFvKC20251020" \
-  -H "X-API-Key: YOUR_API_KEY"
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 <Info>
@@ -113,7 +115,7 @@ curl "https://api.polyrouter.io/functions/v1/games-v1/BUFvKC20251020" \
 
 ```bash
 curl "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=516710&interval=1h&limit=24" \
-  -H "X-API-Key: YOUR_API_KEY"
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 ## Supported Platforms

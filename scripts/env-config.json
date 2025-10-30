@@ -1,0 +1,11 @@
+{
+  "staging": {
+    "baseUrl": "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1",
+    "apiKey": "test_1234567890abcdef"
+  },
+  "production": {
+    "baseUrl": "https://api.polyrouter.io/functions/v1",
+    "apiKey": "5fa709a5-0634-44c3-a991-57166d3c376d"
+  }
+}
+

@@ -1,0 +1,78 @@
+---
+title: "Changelog"
+description: "API updates and new features"
+---
+
+# Changelog
+
+## v0.2.1 - User Profiles & Quality of Life
+
+**Released:** October 31, 2025
+
+Happy Halloween! We added some new QOL stuff for you guys, and a changelog!
+
+### New Features
+- **Changelog**: Added changelog to the API reference
+- **User Profiles API**: New endpoints for retrieving user profile information and trade history on Kalshi and Polymarket
+- **Trade History**: Paginated trade history with platform-specific metadata
+- **Orderbook API**: Real-time bid/ask order book data for Polymarket and Kalshi markets with unified format and normalized prices
+
+### New Endpoints
+
+- **`GET /profile/info`**: Retrieve user profile information and trading metrics
+- **`GET /profile/trades`**: Get user trade history with pagination support
+- **`GET /markets/{market_id}/orderbook`**: Get real-time order book data with bid/ask prices and order depth for Polymarket and Kalshi markets
+
+---
+
+## v0.2.0 - Multi-League Sports Support
+
+
+**Released:** October 28, 2025
+
+### New Features
+
+- **Multi-League Games Support**: Extended sports endpoints to support NBA, NHL, and MLB in addition to NFL
+- **Enhanced Game ID Format**: New format `{AwayTeam}v{HomeTeam}{YYYYMMDD}@{LEAGUE}` (e.g., `PHIvWAS20251028@NBA`)
+- **Kalshi Spreads & Totals**: Added support for moneyline, spread, and total markets on Kalshi platform
+- **Cross-League Game Discovery**: List games across all 4 major US professional sports leagues
+
+### Updated Endpoints
+
+- **`GET /league-info`**: NBA, NHL, and MLB now show operational status with games support
+- **`GET /list-games`**: Added support for `?league=nba|nhl|mlb` parameters  
+- **`GET /games/{game_id}`**: Now accepts game IDs with league suffix and supports all 4 leagues
+
+### Breaking Changes
+
+- None - All changes are backward compatible
+- Old game IDs without league suffix continue to work
+
+---
+
+## v0.1.0 - Beta Launch
+
+**Released:** October 21, 2025
+
+### Initial Release
+
+- **Core API**: Basic prediction market data aggregation across multiple platforms
+- **Sports Betting**: NFL games support with moneyline markets
+- **Platform Support**: Polymarket, Kalshi, ProphetX, Novig, and SX.bet integration
+- **Real-time Data**: Live market prices and trading data
+- **Authentication**: API key-based access control
+
+### Available Endpoints
+
+- **`GET /platforms`**: Platform information and health status
+- **`GET /league-info`**: NFL league and team information
+- **`GET /list-games`**: Available NFL games directory
+- **`GET /games/{game_id}`**: NFL game markets and odds
+- **`GET /list-awards`**: Available sports awards
+- **`GET /awards/{award_id}`**: Award odds and markets
+- **`GET /list-futures`**: Available futures markets
+- **`GET /futures/{future_id}`**: Futures odds and markets
+- **`GET /events`**: Real-time events across platforms
+- **`GET /markets`**: Real-time markets across platforms
+- **`GET /series`**: Real-time series across platforms
+- **`GET /price-history`**: Historical price data

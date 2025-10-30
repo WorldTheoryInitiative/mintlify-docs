@@ -1,0 +1,14 @@
+{
+  "name": "polyrouter-docs",
+  "version": "1.0.0",
+  "description": "PolyRouter API Documentation",
+  "scripts": {
+    "build": "node scripts/build-docs.js && mint build",
+    "dev": "node scripts/build-docs.js && mint dev",
+    "prepare": "node scripts/build-docs.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+

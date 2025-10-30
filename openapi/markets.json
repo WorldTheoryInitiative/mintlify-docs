@@ -1,0 +1,1428 @@
+{
+  "openapi": "3.1.0",
+  "x-mintlify": {
+    "auth": {
+      "apiKey": {
+        "header": "X-API-Key",
+        "default": "5fa709a5-0634-44c3-a991-57166d3c376d"
+      }
+    },
+    "playground": {
+      "display": "interactive"
+    }
+  },
+  "info": {
+    "title": "PolyRouter Prediction Markets API",
+    "description": "Comprehensive API for accessing prediction market data across multiple platforms including Polymarket, Kalshi, and Manifold Markets.\n\n## Features\n- **Unified Data Access**: Single API for multiple prediction market platforms\n- **Real-time Data**: Live market prices, volumes, and trending analysis\n- **Historical Data**: Price history and market analytics\n- **Advanced Filtering**: Category, platform, and status-based filtering\n- **Rate Limiting**: Tiered access with usage tracking\n- **Authentication**: API key-based authentication with Supabase integration\n\n## Supported Platforms\n- **Polymarket**: Decentralized prediction markets on Polygon\n- **Kalshi**: US-regulated prediction markets\n- **Manifold Markets**: Community prediction markets\n\n## Rate Limits\n- **Free Tier**: 100 requests/minute, 10,000 requests/month\n- **Starter Tier**: 500 requests/minute, 50,000 requests/month\n- **Pro Tier**: 2,000 requests/minute, 200,000 requests/month\n- **Enterprise**: Custom limits\n\n## Authentication\n\n**Both API Key and Bearer Token are required for all requests.**\n\n### Required Headers\n```bash\ncurl -H \"X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d\" \\\n     -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0YWhyaWNvd2h6c3hmaHFudnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzA3NTMsImV4cCI6MjA3MjYwNjc1M30.aDVTn1GrFatkivIa7Lr1tADc8ud1T3nF5DnyVweaUcE\" \\\n     https://ptahricowhzsxfhqnvqe.supabase.co/functions/v1/markets-v1\n```\n\n### Individual Components\n- **API Key**: `X-API-Key` header for API access control\n- **Bearer Token**: `Authorization: Bearer` header for Supabase authentication",
+    "version": "1.0.0",
+    "contact": {
+      "name": "PolyRouter API Support",
+      "url": "https://polyrouter.io/support",
+      "email": "support@polyrouter.io"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.polyrouter.io/functions/v1",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/markets": {
+      "get": {
+        "tags": [
+          "v2"
+        ],
+        "summary": "List markets",
+        "description": "Retrieve real-time markets across all supported platforms without database dependency. This endpoint directly proxies external platform APIs and returns data immediately for maximum freshness.",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless, manifold",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "polymarket",
+                "kalshi",
+                "limitless",
+                "manifold"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by market status (comma-separated): open, closed",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "closed"
+              ]
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "description": "Search markets by name or description",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of results per page (1-100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 5
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Cursor for pagination",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_raw",
+            "in": "query",
+            "description": "Include raw data from the platform API",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Markets retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markets": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MarketV2"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "503": {
+            "description": "Platform unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/markets/{market_id}": {
+      "get": {
+        "tags": [
+          "v2"
+        ],
+        "summary": "Get market details",
+        "description": "Retrieve detailed information about a specific market using platform-native IDs",
+        "parameters": [
+          {
+            "name": "market_id",
+            "in": "path",
+            "description": "Platform-native market identifier",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_raw",
+            "in": "query",
+            "description": "Include raw data from the platform API",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Market details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markets": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MarketV2"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "503": {
+            "description": "Platform unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/price-history": {
+      "get": {
+        "tags": [
+          "v2"
+        ],
+        "summary": "Get price history",
+        "description": "Retrieve historical price data using platform-specific market identifiers. This endpoint uses platform-native IDs and fetches data directly from platform APIs for improved performance. Currently, only Polymarket, Kalshi, and Limitless are supported.",
+        "parameters": [
+          {
+            "name": "market_ids",
+            "in": "query",
+            "description": "Comma-separated list of platform-specific market IDs",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_ts",
+            "in": "query",
+            "description": "Start timestamp (Unix timestamp) - Required for data retrieval",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "default": 1759333191
+            }
+          },
+          {
+            "name": "end_ts",
+            "in": "query",
+            "description": "End timestamp (Unix timestamp) - Required for data retrieval",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "default": 1760283591
+            }
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "description": "Time interval - Required",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1m",
+                "5m",
+                "1h",
+                "4h",
+                "1d"
+              ],
+              "default": "1d"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of data points per market (1-5000)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5000,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Price history retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PriceHistoryPointV2"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total_points": {
+                          "type": "number",
+                          "description": "Total number of data points returned"
+                        },
+                        "platforms": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "description": "List of platforms included in response"
+                        },
+                        "time_range": {
+                          "type": "object",
+                          "properties": {
+                            "start": {
+                              "type": "number"
+                            },
+                            "end": {
+                              "type": "number"
+                            }
+                          }
+                        },
+                        "interval": {
+                          "type": "string"
+                        },
+                        "request_time": {
+                          "type": "number"
+                        },
+                        "cache_hit": {
+                          "type": "boolean"
+                        },
+                        "data_freshness": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "503": {
+            "description": "Platform unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/markets/{market_id}/orderbook": {
+      "get": {
+        "tags": [
+          "v2"
+        ],
+        "summary": "Get market orderbook",
+        "description": "Retrieve real-time bid/ask order book data and order depth for prediction markets. This endpoint supports both Polymarket and Kalshi platforms, returning a unified format with normalized price data.",
+        "parameters": [
+          {
+            "name": "market_id",
+            "in": "path",
+            "description": "Platform-native market identifier (Polymarket numeric ID or Kalshi ticker)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "polymarket": {
+                "value": "524153",
+                "description": "Polymarket numeric market ID"
+              },
+              "kalshi": {
+                "value": "KXBALANCE-29",
+                "description": "Kalshi market ticker symbol"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Orderbook retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Orderbook"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "market_id": "524153",
+                    "platform": "polymarket",
+                    "timestamp": "2025-10-30T17:33:49.595Z",
+                    "yes": {
+                      "bids": [
+                        {
+                          "price": 0.001,
+                          "size": 4564.05
+                        },
+                        {
+                          "price": 0.002,
+                          "size": 31.88
+                        }
+                      ],
+                      "asks": [
+                        {
+                          "price": 0.999,
+                          "size": 9573
+                        },
+                        {
+                          "price": 0.998,
+                          "size": 126.16
+                        }
+                      ],
+                      "depth": 53942.15
+                    },
+                    "no": {
+                      "bids": [
+                        {
+                          "price": 0.001,
+                          "size": 9573
+                        },
+                        {
+                          "price": 0.002,
+                          "size": 126.16
+                        }
+                      ],
+                      "asks": [
+                        {
+                          "price": 0.999,
+                          "size": 4564.05
+                        },
+                        {
+                          "price": 0.998,
+                          "size": 31.88
+                        }
+                      ],
+                      "depth": 53942.15
+                    },
+                    "metadata": {
+                      "min_order_size": 5,
+                      "tick_size": 0.001,
+                      "neg_risk": false
+                    }
+                  },
+                  "meta": {
+                    "request_time": 420
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "description": "Market not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "code": "MARKET_NOT_FOUND",
+                    "message": "Market invalid_market_id not found on any supported platform (Polymarket or Kalshi)",
+                    "details": {
+                      "polymarket_error": "Polymarket API error: 404 Not Found",
+                      "kalshi_error": "Kalshi API error: 404 Not Found"
+                    },
+                    "timestamp": "2025-10-30T17:33:49.595Z"
+                  },
+                  "meta": {
+                    "request_time": 250
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                },
+                "examples": {
+                  "kalshi_credentials": {
+                    "value": {
+                      "error": {
+                        "code": "INTERNAL_ERROR",
+                        "message": "An unexpected error occurred while fetching orderbook",
+                        "details": {
+                          "error": "Kalshi credentials not configured. Please set KALSHI_ACCESS_KEY and KALSHI_PRIVATE_KEY environment variables."
+                        },
+                        "timestamp": "2025-10-30T17:33:49.595Z"
+                      },
+                      "meta": {
+                        "request_time": 150
+                      }
+                    }
+                  },
+                  "invalid_credentials": {
+                    "value": {
+                      "error": {
+                        "code": "INTERNAL_ERROR",
+                        "message": "An unexpected error occurred while fetching orderbook",
+                        "details": {
+                          "error": "Invalid Kalshi credentials"
+                        },
+                        "timestamp": "2025-10-30T17:33:49.595Z"
+                      },
+                      "meta": {
+                        "request_time": 200
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key for authentication"
+      }
+    },
+    "schemas": {
+      "PriceHistoryPoint": {
+        "type": "object",
+        "required": [
+          "timestamp",
+          "price",
+          "platform",
+          "marketId",
+          "outcomeId"
+        ],
+        "properties": {
+          "timestamp": {
+            "type": "number",
+            "description": "Unix timestamp of the data point"
+          },
+          "price": {
+            "$ref": "#/components/schemas/PriceData"
+          },
+          "volume": {
+            "type": "number",
+            "nullable": true,
+            "description": "Trading volume (Kalshi only)"
+          },
+          "openInterest": {
+            "type": "number",
+            "nullable": true,
+            "description": "Open interest (Kalshi only)"
+          },
+          "bidAsk": {
+            "$ref": "#/components/schemas/BidAskData"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "kalshi",
+              "polymarket",
+              "limitless"
+            ],
+            "description": "Platform identifier"
+          },
+          "marketId": {
+            "type": "string",
+            "description": "Platform-specific market identifier"
+          },
+          "outcomeId": {
+            "type": "string",
+            "description": "Outcome identifier (yes, no, etc.)"
+          }
+        }
+      },
+      "Market": {
+        "type": "object",
+        "required": [
+          "id",
+          "platform",
+          "platform_id",
+          "title",
+          "status",
+          "market_type",
+          "created_at",
+          "last_updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique market identifier",
+            "example": "polymarket_market_0x7c1a79a67070d84619e119e5271177b2cf865ffd843c901ba025a6cf238adbaf"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "polymarket",
+              "kalshi",
+              "limitless",
+              "manifold"
+            ],
+            "description": "Source platform"
+          },
+          "platform_id": {
+            "type": "string",
+            "description": "Original platform market ID"
+          },
+          "event_id": {
+            "type": "string",
+            "description": "Internal event identifier"
+          },
+          "series_id": {
+            "type": "string",
+            "description": "Internal series identifier"
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL-friendly market identifier"
+          },
+          "title": {
+            "type": "string",
+            "description": "Market question/title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed market description"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "politics",
+              "sports",
+              "crypto",
+              "economics",
+              "technology",
+              "weather",
+              "other"
+            ],
+            "description": "Market category"
+          },
+          "subcategory": {
+            "type": "string",
+            "nullable": true,
+            "description": "Market subcategory"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed",
+              "resolved",
+              "paused"
+            ],
+            "description": "Market status"
+          },
+          "market_type": {
+            "type": "string",
+            "enum": [
+              "binary",
+              "categorical",
+              "scalar"
+            ],
+            "description": "Market type"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Market creation timestamp"
+          },
+          "trading_start": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trading start timestamp"
+          },
+          "trading_end": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trading end timestamp"
+          },
+          "resolution_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Market resolution timestamp"
+          },
+          "current_prices": {
+            "$ref": "#/components/schemas/CurrentPrices"
+          },
+          "volume_24h": {
+            "type": "number",
+            "nullable": true,
+            "description": "24-hour trading volume"
+          },
+          "volume_total": {
+            "type": "number",
+            "description": "Total trading volume"
+          },
+          "liquidity_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Market liquidity score"
+          },
+          "unique_traders": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of unique traders"
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Original platform URL"
+          },
+          "last_updated": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last data update timestamp"
+          }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "required": [
+          "request_time",
+          "cache_hit",
+          "data_freshness"
+        ],
+        "properties": {
+          "request_time": {
+            "type": "number",
+            "description": "Request processing time (ms)"
+          },
+          "cache_hit": {
+            "type": "boolean",
+            "description": "Whether response was served from cache"
+          },
+          "data_freshness": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data freshness timestamp"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "has_more",
+          "next_offset"
+        ],
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of results per page"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Current page offset"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether more pages exist"
+          },
+          "next_offset": {
+            "type": "number",
+            "description": "Offset for next page"
+          }
+        }
+      },
+      "MarketV2": {
+        "type": "object",
+        "required": [
+          "id",
+          "platform",
+          "platform_id",
+          "title",
+          "status",
+          "market_type",
+          "created_at",
+          "last_synced_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Platform-native market identifier"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "polymarket",
+              "kalshi",
+              "limitless",
+              "manifold"
+            ],
+            "description": "Source platform"
+          },
+          "platform_id": {
+            "type": "string",
+            "description": "Original platform market ID (same as id)"
+          },
+          "event_id": {
+            "type": "string",
+            "description": "Associated event identifier"
+          },
+          "event_name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Event title (if available)"
+          },
+          "event_slug": {
+            "type": "string",
+            "nullable": true,
+            "description": "URL-friendly event identifier"
+          },
+          "title": {
+            "type": "string",
+            "description": "Market question/title"
+          },
+          "market_slug": {
+            "type": "string",
+            "description": "URL-friendly market identifier"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed market description"
+          },
+          "subcategory": {
+            "type": "string",
+            "nullable": true,
+            "description": "Market subcategory"
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Original platform URL"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed",
+              "resolved",
+              "paused"
+            ],
+            "description": "Market status"
+          },
+          "market_type": {
+            "type": "string",
+            "enum": [
+              "binary",
+              "categorical",
+              "scalar"
+            ],
+            "description": "Market type"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "description": "Market category"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true,
+            "description": "Array of market tags"
+          },
+          "outcomes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OutcomeV2"
+            },
+            "description": "Array of market outcomes"
+          },
+          "current_prices": {
+            "$ref": "#/components/schemas/CurrentPrices"
+          },
+          "volume_24h": {
+            "type": "number",
+            "nullable": true,
+            "description": "24-hour trading volume"
+          },
+          "volume_7d": {
+            "type": "number",
+            "nullable": true,
+            "description": "7-day trading volume"
+          },
+          "volume_total": {
+            "type": "number",
+            "description": "Total trading volume"
+          },
+          "liquidity": {
+            "type": "number",
+            "description": "Market liquidity"
+          },
+          "liquidity_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Calculated liquidity score (0-1)"
+          },
+          "open_interest": {
+            "type": "number",
+            "nullable": true,
+            "description": "Current open interest"
+          },
+          "unique_traders": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of unique traders"
+          },
+          "fee_rate": {
+            "type": "number",
+            "nullable": true,
+            "description": "Trading fee rate"
+          },
+          "trading_fee": {
+            "type": "number",
+            "nullable": true,
+            "description": "Trading fee"
+          },
+          "withdrawal_fee": {
+            "type": "number",
+            "nullable": true,
+            "description": "Withdrawal fee"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Market creation timestamp (ISO 8601)"
+          },
+          "trading_start_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trading start timestamp (ISO 8601)"
+          },
+          "trading_end_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trading end timestamp (ISO 8601)"
+          },
+          "resolution_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Market resolution timestamp (ISO 8601)"
+          },
+          "resolved_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Market resolution timestamp (ISO 8601)"
+          },
+          "resolution_criteria": {
+            "type": "string",
+            "description": "Market resolution criteria"
+          },
+          "resolution_source": {
+            "type": "string",
+            "format": "uri",
+            "description": "Resolution source URL"
+          },
+          "price_24h_changes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "24-hour price changes per outcome"
+          },
+          "price_7d_changes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "7-day price changes per outcome"
+          },
+          "last_trades": {
+            "type": "object",
+            "nullable": true,
+            "description": "Last trade information"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Platform-specific metadata"
+          },
+          "raw_data": {
+            "type": "object",
+            "description": "Complete raw platform response"
+          },
+          "last_synced_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last data sync timestamp (ISO 8601)"
+          }
+        }
+      },
+      "PriceHistoryPointV2": {
+        "type": "object",
+        "required": [
+          "timestamp",
+          "price",
+          "platform",
+          "marketId"
+        ],
+        "properties": {
+          "timestamp": {
+            "type": "number",
+            "description": "Unix timestamp of the data point"
+          },
+          "price": {
+            "$ref": "#/components/schemas/PriceData"
+          },
+          "volume": {
+            "type": "number",
+            "nullable": true,
+            "description": "Trading volume"
+          },
+          "openInterest": {
+            "type": "number",
+            "nullable": true,
+            "description": "Open interest"
+          },
+          "bidAsk": {
+            "$ref": "#/components/schemas/BidAskData"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "kalshi",
+              "polymarket",
+              "limitless"
+            ],
+            "description": "Platform identifier"
+          },
+          "marketId": {
+            "type": "string",
+            "description": "Platform-specific market identifier"
+          },
+          "outcomeId": {
+            "type": "string",
+            "description": "Outcome identifier (yes, no, etc.)"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "timestamp"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Error timestamp"
+          }
+        }
+      },
+      "CurrentPrices": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/PriceDetail"
+        },
+        "description": "Current prices for each outcome"
+      },
+      "PriceDetail": {
+        "type": "object",
+        "required": ["price"],
+        "properties": {
+          "price": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Current market price"
+          },
+          "bid": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Best bid price"
+          },
+          "ask": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Best ask price"
+          }
+        }
+      },
+      "PriceData": {
+        "type": "object",
+        "required": ["close"],
+        "properties": {
+          "close": {
+            "type": "number",
+            "description": "Closing price (always available)"
+          },
+          "open": {
+            "type": "number",
+            "description": "Opening price (Kalshi only)"
+          },
+          "high": {
+            "type": "number",
+            "description": "Highest price (Kalshi only)"
+          },
+          "low": {
+            "type": "number",
+            "description": "Lowest price (Kalshi only)"
+          }
+        }
+      },
+      "BidAskData": {
+        "type": "object",
+        "properties": {
+          "bid": {
+            "$ref": "#/components/schemas/OHLCData"
+          },
+          "ask": {
+            "$ref": "#/components/schemas/OHLCData"
+          }
+        }
+      },
+      "OHLCData": {
+        "type": "object",
+        "properties": {
+          "close": {
+            "type": "number"
+          },
+          "open": {
+            "type": "number"
+          },
+          "high": {
+            "type": "number"
+          },
+          "low": {
+            "type": "number"
+          }
+        }
+      },
+      "OutcomeV2": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Outcome identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Outcome display name"
+          }
+        }
+      },
+      "Orderbook": {
+        "type": "object",
+        "required": ["market_id", "platform", "timestamp", "yes", "no"],
+        "properties": {
+          "market_id": {
+            "type": "string",
+            "description": "Platform-native market identifier"
+          },
+          "platform": {
+            "type": "string",
+            "enum": ["polymarket", "kalshi"],
+            "description": "Source platform"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Response timestamp (ISO 8601)"
+          },
+          "yes": {
+            "$ref": "#/components/schemas/OrderbookSide"
+          },
+          "no": {
+            "$ref": "#/components/schemas/OrderbookSide"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/OrderbookMetadata"
+          }
+        }
+      },
+      "OrderbookSide": {
+        "type": "object",
+        "required": ["bids", "asks", "depth"],
+        "properties": {
+          "bids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            },
+            "description": "Array of bid orders (sorted by price, descending)"
+          },
+          "asks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            },
+            "description": "Array of ask orders (sorted by price, ascending)"
+          },
+          "depth": {
+            "type": "number",
+            "description": "Total order depth (sum of all bid and ask sizes)"
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "required": ["price", "size"],
+        "properties": {
+          "price": {
+            "type": "number",
+            "minimum": 0.01,
+            "maximum": 1.0,
+            "description": "Order price (decimal format, 0.01-1.00)"
+          },
+          "size": {
+            "type": "number",
+            "description": "Order size (number of contracts/shares)"
+          }
+        }
+      },
+      "OrderbookMetadata": {
+        "type": "object",
+        "properties": {
+          "min_order_size": {
+            "type": "number",
+            "description": "Minimum order size (Polymarket only)"
+          },
+          "tick_size": {
+            "type": "number",
+            "description": "Minimum price increment (Polymarket only)"
+          },
+          "neg_risk": {
+            "type": "boolean",
+            "description": "Whether market allows negative risk (Polymarket only)"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Validation error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AuthenticationError": {
+        "description": "Authentication error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Resource not found error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

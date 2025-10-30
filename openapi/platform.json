@@ -1,0 +1,636 @@
+{
+  "openapi": "3.1.0",
+  "x-mintlify": {
+    "auth": {
+      "apiKey": {
+        "header": "X-API-Key",
+        "default": "5fa709a5-0634-44c3-a991-57166d3c376d"
+      }
+    },
+    "playground": {
+      "display": "interactive"
+    }
+  },
+  "info": {
+    "title": "PolyRouter Prediction Markets API",
+    "description": "Comprehensive API for accessing prediction market data across multiple platforms including Polymarket, Kalshi, and Manifold Markets.\n\n## Features\n- **Unified Data Access**: Single API for multiple prediction market platforms\n- **Real-time Data**: Live market prices, volumes, and trending analysis\n- **Historical Data**: Price history and market analytics\n- **Advanced Filtering**: Category, platform, and status-based filtering\n- **Rate Limiting**: Tiered access with usage tracking\n- **Authentication**: API key-based authentication with Supabase integration\n\n## Supported Platforms\n- **Polymarket**: Decentralized prediction markets on Polygon\n- **Kalshi**: US-regulated prediction markets\n- **Manifold Markets**: Community prediction markets\n\n## Rate Limits\n- **Free Tier**: 100 requests/minute, 10,000 requests/month\n- **Starter Tier**: 500 requests/minute, 50,000 requests/month\n- **Pro Tier**: 2,000 requests/minute, 200,000 requests/month\n- **Enterprise**: Custom limits\n\n## Authentication\n\n**Both API Key and Bearer Token are required for all requests.**\n\n### Required Headers\n```bash\ncurl -H \"X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d\" \\\n     -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0YWhyaWNvd2h6c3hmaHFudnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzA3NTMsImV4cCI6MjA3MjYwNjc1M30.aDVTn1GrFatkivIa7Lr1tADc8ud1T3nF5DnyVweaUcE\" \\\n     https://ptahricowhzsxfhqnvqe.supabase.co/functions/v1/markets-v1\n```\n\n### Individual Components\n- **API Key**: `X-API-Key` header for API access control\n- **Bearer Token**: `Authorization: Bearer` header for Supabase authentication",
+    "version": "1.0.0",
+    "contact": {
+      "name": "PolyRouter API Support",
+      "url": "https://polyrouter.io/support",
+      "email": "support@polyrouter.io"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.polyrouter.io/functions/v1",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/platforms": {
+      "get": {
+        "tags": [
+          "Platform"
+        ],
+        "summary": "Get platform information",
+        "description": "Retrieve comprehensive information about all supported platforms, their capabilities, features, and real-time health status. This endpoint provides platform discovery, feature detection, ID format specifications, and health monitoring for both market and sports platforms.",
+        "responses": {
+          "200": {
+            "description": "Platform information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "markets": {
+                      "type": "object",
+                      "properties": {
+                        "platforms": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/MarketPlatform"
+                          }
+                        },
+                        "health": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string",
+                            "enum": [
+                              "healthy",
+                              "degraded",
+                              "unavailable"
+                            ]
+                          },
+                          "description": "Health status for each market platform"
+                        },
+                        "total_platforms": {
+                          "type": "number",
+                          "description": "Total number of market platforms"
+                        }
+                      }
+                    },
+                    "sports": {
+                      "type": "object",
+                      "properties": {
+                        "platforms": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/SportsPlatform"
+                          }
+                        },
+                        "health": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string",
+                            "enum": [
+                              "healthy",
+                              "degraded",
+                              "unavailable"
+                            ]
+                          },
+                          "description": "Health status for each sports platform"
+                        },
+                        "total_platforms": {
+                          "type": "number",
+                          "description": "Total number of sports platforms"
+                        }
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "request_time": {
+                          "type": "number",
+                          "description": "Request processing time (ms)"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "Response timestamp"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "API version"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key for authentication"
+      }
+    },
+    "schemas": {
+      "Market": {
+        "type": "object",
+        "required": [
+          "id",
+          "platform",
+          "platform_id",
+          "title",
+          "status",
+          "market_type",
+          "created_at",
+          "last_updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique market identifier",
+            "example": "polymarket_market_0x7c1a79a67070d84619e119e5271177b2cf865ffd843c901ba025a6cf238adbaf"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "polymarket",
+              "kalshi",
+              "limitless",
+              "manifold"
+            ],
+            "description": "Source platform"
+          },
+          "platform_id": {
+            "type": "string",
+            "description": "Original platform market ID"
+          },
+          "event_id": {
+            "type": "string",
+            "description": "Internal event identifier"
+          },
+          "series_id": {
+            "type": "string",
+            "description": "Internal series identifier"
+          },
+          "slug": {
+            "type": "string",
+            "description": "URL-friendly market identifier"
+          },
+          "title": {
+            "type": "string",
+            "description": "Market question/title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed market description"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "enum": [
+              "politics",
+              "sports",
+              "crypto",
+              "economics",
+              "technology",
+              "weather",
+              "other"
+            ],
+            "description": "Market category"
+          },
+          "subcategory": {
+            "type": "string",
+            "nullable": true,
+            "description": "Market subcategory"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "closed",
+              "resolved",
+              "paused"
+            ],
+            "description": "Market status"
+          },
+          "market_type": {
+            "type": "string",
+            "enum": [
+              "binary",
+              "categorical",
+              "scalar"
+            ],
+            "description": "Market type"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Market creation timestamp"
+          },
+          "trading_start": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trading start timestamp"
+          },
+          "trading_end": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trading end timestamp"
+          },
+          "resolution_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Market resolution timestamp"
+          },
+          "current_prices": {
+            "$ref": "#/components/schemas/CurrentPrices"
+          },
+          "volume_24h": {
+            "type": "number",
+            "nullable": true,
+            "description": "24-hour trading volume"
+          },
+          "volume_total": {
+            "type": "number",
+            "description": "Total trading volume"
+          },
+          "liquidity_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Market liquidity score"
+          },
+          "unique_traders": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of unique traders"
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Original platform URL"
+          },
+          "last_updated": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last data update timestamp"
+          }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "required": [
+          "request_time",
+          "cache_hit",
+          "data_freshness"
+        ],
+        "properties": {
+          "request_time": {
+            "type": "number",
+            "description": "Request processing time (ms)"
+          },
+          "cache_hit": {
+            "type": "boolean",
+            "description": "Whether response was served from cache"
+          },
+          "data_freshness": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data freshness timestamp"
+          }
+        }
+      },
+      "SportsPlatform": {
+        "type": "object",
+        "required": [
+          "platform",
+          "display_name",
+          "endpoints",
+          "features",
+          "rate_limit"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Platform identifier (lowercase)",
+            "example": "polymarket"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable platform name",
+            "example": "Polymarket Sports"
+          },
+          "endpoints": {
+            "type": "object",
+            "properties": {
+              "awards": {
+                "type": "boolean",
+                "description": "Supports Awards-v1 endpoint"
+              },
+              "games": {
+                "type": "boolean",
+                "description": "Supports Games-v1 endpoint"
+              },
+              "list_games": {
+                "type": "boolean",
+                "description": "Supports List-Games-v1 endpoint"
+              },
+              "league_info": {
+                "type": "boolean",
+                "description": "Supports League-Info-v1 endpoint"
+              }
+            }
+          },
+          "features": {
+            "type": "object",
+            "properties": {
+              "odds_formats": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "american",
+                    "decimal",
+                    "probability"
+                  ]
+                },
+                "description": "Supported odds formats"
+              },
+              "supported_leagues": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Supported sports leagues"
+              },
+              "market_types": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Supported market types"
+              }
+            }
+          },
+          "rate_limit": {
+            "type": "string",
+            "description": "Rate limit information",
+            "example": "100 req/min"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "has_more",
+          "next_offset"
+        ],
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of results per page"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Current page offset"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether more pages exist"
+          },
+          "next_offset": {
+            "type": "number",
+            "description": "Offset for next page"
+          }
+        }
+      },
+      "MarketPlatform": {
+        "type": "object",
+        "required": [
+          "platform",
+          "display_name",
+          "endpoints",
+          "features",
+          "id_format",
+          "base_url",
+          "rate_limit"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "description": "Platform identifier (lowercase)",
+            "example": "polymarket"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable platform name",
+            "example": "Polymarket"
+          },
+          "endpoints": {
+            "type": "object",
+            "properties": {
+              "markets": {
+                "type": "boolean",
+                "description": "Supports Markets-v2 endpoint"
+              },
+              "events": {
+                "type": "boolean",
+                "description": "Supports Events-v2 endpoint"
+              },
+              "series": {
+                "type": "boolean",
+                "description": "Supports Series-v2 endpoint"
+              },
+              "search": {
+                "type": "boolean",
+                "description": "Supports Search-v2 endpoint"
+              },
+              "price_history": {
+                "type": "boolean",
+                "description": "Supports Price History-v2 endpoint"
+              }
+            }
+          },
+          "features": {
+            "type": "object",
+            "properties": {
+              "status_filtering": {
+                "type": "boolean",
+                "description": "Supports filtering by market status"
+              },
+              "date_filtering": {
+                "type": "boolean",
+                "description": "Supports filtering by date ranges"
+              },
+              "pagination_type": {
+                "type": "string",
+                "enum": [
+                  "offset",
+                  "cursor"
+                ],
+                "description": "Pagination method"
+              },
+              "market_types": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Supported market types"
+              }
+            }
+          },
+          "id_format": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": "Human-readable description of ID format"
+              },
+              "example": {
+                "type": "string",
+                "description": "Example market ID"
+              },
+              "pattern": {
+                "type": "string",
+                "description": "Regular expression pattern for validation"
+              }
+            }
+          },
+          "base_url": {
+            "type": "string",
+            "description": "Platform's base API URL",
+            "example": "https://gamma-api.polymarket.com"
+          },
+          "rate_limit": {
+            "type": "string",
+            "description": "Rate limit information",
+            "example": "100 req/min"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "timestamp"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Error timestamp"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Validation error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AuthenticationError": {
+        "description": "Authentication error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Resource not found error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

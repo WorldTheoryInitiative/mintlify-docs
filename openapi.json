@@ -37,1014 +37,6 @@
     }
   ],
   "paths": {
-    "/categories-v1": {
-      "get": {
-        "tags": ["Categories"],
-        "summary": "Get market categories",
-        "description": "Retrieve all available prediction market categories with optional statistics and featured markets",
-        "parameters": [
-          {
-            "name": "include_counts",
-            "in": "query",
-            "description": "Include market counts, volume, and growth metrics",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          },
-          {
-            "name": "include_trending",
-            "in": "query",
-            "description": "Include top 3 featured markets per category",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Categories retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "categories": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Category"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/events-v1": {
-      "get": {
-        "tags": ["Events"],
-        "summary": "Get prediction market events",
-        "description": "Retrieve paginated lists of prediction market events with filtering and sorting options",
-        "parameters": [
-          {
-            "name": "platform",
-            "in": "query",
-            "description": "Filter by platforms (comma-separated)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["polymarket", "kalshi", "limitless"]
-            }
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "description": "Filter by categories (comma-separated)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["politics", "sports", "crypto", "economics", "technology", "weather", "other"]
-            }
-          },
-          {
-            "name": "series_ticker",
-            "in": "query",
-            "description": "Filter events by series ticker",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "Search term for event titles and descriptions (min 2 chars)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "minLength": 2
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort order",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["created_desc", "created_asc", "event_start_desc", "event_start_asc", "event_end_desc", "event_end_asc"],
-              "default": "event_start_asc"
-            }
-          },
-          {
-            "name": "with_nested_markets",
-            "in": "query",
-            "description": "Include nested markets in the response",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of results per page (1-100)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 10
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "description": "Pagination offset",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Events retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "events": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Event"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/events-v1/{event_id}": {
-      "get": {
-        "tags": ["Events"],
-        "summary": "Get event details",
-        "description": "Retrieve detailed information about a specific event with nested markets",
-        "parameters": [
-          {
-            "name": "event_id",
-            "in": "path",
-            "description": "Unique event identifier",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Event details retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "event": {
-                      "$ref": "#/components/schemas/Event"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/markets-v1": {
-      "get": {
-        "tags": ["Markets"],
-        "summary": "Get prediction markets",
-        "description": "Retrieve paginated lists of prediction markets with filtering and sorting options",
-        "parameters": [
-          {
-            "name": "platform",
-            "in": "query",
-            "description": "Filter by platforms (comma-separated)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["polymarket", "kalshi", "limitless"]
-            }
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "description": "Filter by categories (comma-separated)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["politics", "sports", "crypto", "economics", "technology", "weather", "other"]
-            }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "description": "Filter by market status (comma-separated)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["open", "closed", "resolved", "paused"]
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort order",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["volume_desc", "volume_asc", "created_desc", "created_asc", "trending"],
-              "default": "volume_desc"
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "Search term for market titles and descriptions (min 2 chars)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "minLength": 2
-            }
-          },
-          {
-            "name": "min_volume",
-            "in": "query",
-            "description": "Minimum 24h volume filter",
-            "required": false,
-            "schema": {
-              "type": "number",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of results per page (1-100)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 10
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "description": "Pagination offset",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Markets retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "markets": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Market"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/markets-v1/{market_id}": {
-      "get": {
-        "tags": ["Markets"],
-        "summary": "Get market details",
-        "description": "Retrieve detailed information about a specific market",
-        "parameters": [
-          {
-            "name": "market_id",
-            "in": "path",
-            "description": "Unique market identifier",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Market details retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "market": {
-                      "$ref": "#/components/schemas/Market"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/platforms-v1": {
-      "get": {
-        "tags": ["Platforms"],
-        "summary": "Get platform status",
-        "description": "Retrieve status and health information for all integrated prediction market platforms",
-        "responses": {
-          "200": {
-            "description": "Platform status retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "platforms": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/Platform"
-                          }
-                        },
-                        "overall_status": {
-                          "type": "string",
-                          "enum": ["healthy", "degraded", "unhealthy", "unknown"],
-                          "description": "System-wide health status"
-                        },
-                        "total_markets": {
-                          "type": "number",
-                          "description": "Total number of active markets across all platforms"
-                        },
-                        "last_updated": {
-                          "type": "string",
-                          "format": "date-time",
-                          "description": "Last update timestamp"
-                        }
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/price-history-v1": {
-      "get": {
-        "tags": ["Price History"],
-        "summary": "Get price history",
-        "description": "Retrieve historical price data for multiple markets with unified format",
-        "parameters": [
-          {
-            "name": "market_ids",
-            "in": "query",
-            "description": "Comma-separated list of internal market IDs",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "start_ts",
-            "in": "query",
-            "description": "Start timestamp (Unix timestamp) - Required for data retrieval",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "default": 1759333191
-            }
-          },
-          {
-            "name": "end_ts",
-            "in": "query",
-            "description": "End timestamp (Unix timestamp) - Required for data retrieval",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "default": 1760283591
-            }
-          },
-          {
-            "name": "interval",
-            "in": "query",
-            "description": "Time interval - Required",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": ["1m", "5m", "1h", "4h", "1d"],
-              "default": "1d"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Maximum number of data points per market (1-5000)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 5000,
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Price history retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/PriceHistoryPoint"
-                      }
-                    },
-                    "meta": {
-                      "type": "object",
-                      "properties": {
-                        "total_points": {
-                          "type": "number",
-                          "description": "Total number of data points returned"
-                        },
-                        "platforms": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "description": "List of platforms included in response"
-                        },
-                        "time_range": {
-                          "type": "object",
-                          "properties": {
-                            "start": {
-                              "type": "number"
-                            },
-                            "end": {
-                              "type": "number"
-                            }
-                          }
-                        },
-                        "interval": {
-                          "type": "string"
-                        },
-                        "request_time": {
-                          "type": "number"
-                        },
-                        "cache_hit": {
-                          "type": "boolean"
-                        },
-                        "data_freshness": {
-                          "type": "string",
-                          "format": "date-time"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "503": {
-            "description": "Platform unavailable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "$ref": "#/components/schemas/Error"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/series-v1": {
-      "get": {
-        "tags": ["Series"],
-        "summary": "Get prediction market series",
-        "description": "Retrieve paginated lists of prediction market series with filtering and sorting options",
-        "parameters": [
-          {
-            "name": "platform",
-            "in": "query",
-            "description": "Filter by platforms (comma-separated)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["polymarket", "kalshi", "limitless"]
-            }
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "description": "Filter by categories (comma-separated)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["politics", "sports", "crypto", "economics", "technology", "weather", "other"]
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "Search term for series titles and descriptions (min 2 chars)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "minLength": 2
-            }
-          },
-          {
-            "name": "min_events",
-            "in": "query",
-            "description": "Minimum number of events in series",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "min_markets",
-            "in": "query",
-            "description": "Minimum number of markets across all events in series",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "min_volume",
-            "in": "query",
-            "description": "Minimum total volume across all markets in series",
-            "required": false,
-            "schema": {
-              "type": "number",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "sort",
-            "in": "query",
-            "description": "Sort order",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["title_asc", "title_desc", "created_asc", "created_desc", "events_asc", "events_desc", "markets_asc", "markets_desc", "volume_asc", "volume_desc"],
-              "default": "title_asc"
-            }
-          },
-          {
-            "name": "with_events",
-            "in": "query",
-            "description": "Include nested events in the response",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          },
-          {
-            "name": "with_market_summary",
-            "in": "query",
-            "description": "Include market summary statistics for each event",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of results per page (1-100)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 10
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "description": "Pagination offset",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 0
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Series retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "series": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Series"
-                      }
-                    },
-                    "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/series-v1/{series_id}": {
-      "get": {
-        "tags": ["Series"],
-        "summary": "Get series details",
-        "description": "Retrieve detailed information about a specific series with nested events and market data",
-        "parameters": [
-          {
-            "name": "series_id",
-            "in": "path",
-            "description": "Unique series identifier",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Series details retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "series": {
-                      "$ref": "#/components/schemas/Series"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/trending-v1": {
-      "get": {
-        "tags": ["Trending"],
-        "summary": "Get trending markets",
-        "description": "Retrieve markets that are experiencing significant activity, volume spikes, price movements, or social buzz",
-        "parameters": [
-          {
-            "name": "period",
-            "in": "query",
-            "description": "Trending period",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["1h", "24h", "7d"],
-              "default": "24h"
-            }
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "description": "Filter by categories (comma-separated)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["politics", "sports", "crypto", "economics", "technology", "weather", "other"]
-            }
-          },
-          {
-            "name": "metric",
-            "in": "query",
-            "description": "Trending metric",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["volume", "price_change", "trader_activity"],
-              "default": "volume"
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of results (1-50)",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 50,
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Trending markets retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "trending": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/TrendingMarket"
-                      }
-                    },
-                    "period": {
-                      "type": "string",
-                      "description": "Trending period used for analysis"
-                    },
-                    "generated_at": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "Response generation timestamp"
-                    },
-                    "next_update": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "Next cache update timestamp"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/ValidationError"
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "405": {
-            "description": "Method not allowed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "$ref": "#/components/schemas/Error"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/Meta"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
-    "/sync-runner": {
-      "post": {
-        "tags": ["Sync"],
-        "summary": "Trigger platform sync",
-        "description": "Manually trigger data synchronization for a specific platform",
-        "requestBody": {
-          "description": "Sync request parameters",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SyncRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Sync completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "platform": {
-                      "type": "string"
-                    },
-                    "stats": {
-                      "type": "object",
-                      "properties": {
-                        "series": {
-                          "type": "number"
-                        },
-                        "events": {
-                          "type": "number"
-                        },
-                        "markets": {
-                          "type": "number"
-                        }
-                      }
-                    },
-                    "response_time": {
-                      "type": "number"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid platform or sync request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/AuthenticationError"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalError"
-          }
-        }
-      }
-    },
     "/events": {
       "get": {
         "tags": ["v2"],
@@ -2410,6 +1402,224 @@
           },
           "401": {
             "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/profile/info": {
+      "get": {
+        "tags": ["Profiles"],
+        "summary": "Get user profile information",
+        "description": "Retrieve user profile information and optional trading metrics from Kalshi and Polymarket platforms using a unified interface.",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Platform identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["kalshi", "polymarket"]
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "description": "User identifier (nickname for Kalshi, address for Polymarket)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_metrics",
+            "in": "query",
+            "description": "Include trading metrics in response",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "profile": {
+                          "$ref": "#/components/schemas/UserProfile"
+                        },
+                        "metrics": {
+                          "$ref": "#/components/schemas/UserMetrics"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/Meta"
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "503": {
+            "description": "Platform unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/profile/trades": {
+      "get": {
+        "tags": ["Profiles"],
+        "summary": "Get user trade history",
+        "description": "Retrieve user trade history with pagination support from Kalshi and Polymarket platforms.",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Platform identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["kalshi", "polymarket"]
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "description": "User identifier (nickname for Kalshi, address for Polymarket)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of trades to return (1-100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor for next page",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trade history retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "trades": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/UserTrade"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/ProfilePagination"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/Meta"
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "503": {
+            "description": "Platform unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
             "$ref": "#/components/responses/InternalError"
@@ -4390,6 +3600,197 @@
             "type": "string",
             "description": "Rate limit information",
             "example": "100 req/min"
+          }
+        }
+      },
+      "UserProfile": {
+        "type": "object",
+        "required": ["platform", "user_id", "display_name"],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["kalshi", "polymarket"],
+            "description": "Source platform"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "User display name"
+          },
+          "profile_image": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Profile image URL"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "User description/bio"
+          },
+          "joined_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Account creation timestamp"
+          },
+          "follower_count": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of followers"
+          },
+          "following_count": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of users following"
+          },
+          "profile_view_count": {
+            "type": "number",
+            "nullable": true,
+            "description": "Profile view count"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Platform-specific metadata"
+          }
+        }
+      },
+      "UserMetrics": {
+        "type": "object",
+        "required": ["platform", "user_id"],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["kalshi", "polymarket"],
+            "description": "Source platform"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "volume": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total trading volume"
+          },
+          "pnl": {
+            "type": "number",
+            "nullable": true,
+            "description": "Profit and loss"
+          },
+          "roi": {
+            "type": "number",
+            "nullable": true,
+            "description": "Return on investment"
+          },
+          "num_markets_traded": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of markets traded"
+          },
+          "portfolio_value": {
+            "type": "number",
+            "nullable": true,
+            "description": "Current portfolio value"
+          },
+          "open_interest": {
+            "type": "number",
+            "nullable": true,
+            "description": "Open interest amount"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Platform-specific metrics metadata"
+          }
+        }
+      },
+      "UserTrade": {
+        "type": "object",
+        "required": ["platform", "trade_id", "user_id", "market_id", "side", "outcome", "price", "size", "timestamp"],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["kalshi", "polymarket"],
+            "description": "Source platform"
+          },
+          "trade_id": {
+            "type": "string",
+            "description": "Unique trade identifier"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Market identifier"
+          },
+          "ticker": {
+            "type": "string",
+            "nullable": true,
+            "description": "Market ticker symbol"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Market title"
+          },
+          "side": {
+            "type": "string",
+            "enum": ["buy", "sell"],
+            "description": "Trade side"
+          },
+          "outcome": {
+            "type": "string",
+            "description": "Outcome traded"
+          },
+          "price": {
+            "type": "number",
+            "description": "Trade price"
+          },
+          "size": {
+            "type": "number",
+            "description": "Trade size"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trade timestamp"
+          },
+          "transaction_hash": {
+            "type": "string",
+            "nullable": true,
+            "description": "Blockchain transaction hash"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Platform-specific trade metadata"
+          }
+        }
+      },
+      "ProfilePagination": {
+        "type": "object",
+        "required": ["total", "limit", "has_more"],
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of trades"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of trades per page"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether more pages exist"
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for next page"
           }
         }
       }

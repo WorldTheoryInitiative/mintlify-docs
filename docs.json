@@ -32,14 +32,14 @@
           },
           {
             "group": "Platform",
-            "openapi": "openapi.json",
+            "openapi": "openapi/platform.json",
             "pages": [
               "GET /platforms"
             ]
           },
           {
             "group": "Sports",
-            "openapi": "openapi.json",
+            "openapi": "openapi/sports.json",
             "pages": [
               "GET /league-info",
               "GET /list-games",
@@ -52,16 +52,17 @@
           },
           {
             "group": "Markets",
-            "openapi": "openapi.json",
+            "openapi": "openapi/markets.json",
             "pages": [
               "GET /markets",
               "GET /markets/{market_id}",
-              "GET /price-history"
+              "GET /price-history",
+              "GET /markets/{market_id}/orderbook"
             ]
           },
           {
             "group": "Events",
-            "openapi": "openapi.json",
+            "openapi": "openapi/events.json",
             "pages": [
               "GET /events",
               "GET /events/{event_id}"
@@ -69,12 +70,26 @@
           },
           {
             "group": "Series",
-            "openapi": "openapi.json",
+            "openapi": "openapi/series.json",
             "pages": [
               "GET /series",
               "GET /series/{series_id}"
             ]
+          },
+          {
+            "group": "Profiles",
+            "openapi": "openapi/profiles.json",
+            "pages": [
+              "GET /profile/info",
+              "GET /profile/trades"
+            ]
           }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "pages": [
+          "api-reference/changelog"
         ]
       }
     ],

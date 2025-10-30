@@ -1,0 +1,1413 @@
+{
+  "openapi": "3.1.0",
+  "x-mintlify": {
+    "auth": {
+      "apiKey": {
+        "header": "X-API-Key",
+        "default": "5fa709a5-0634-44c3-a991-57166d3c376d"
+      }
+    },
+    "playground": {
+      "display": "interactive"
+    }
+  },
+  "info": {
+    "title": "PolyRouter Prediction Markets API",
+    "description": "Comprehensive API for accessing prediction market data across multiple platforms including Polymarket, Kalshi, and Manifold Markets.\n\n## Features\n- **Unified Data Access**: Single API for multiple prediction market platforms\n- **Real-time Data**: Live market prices, volumes, and trending analysis\n- **Historical Data**: Price history and market analytics\n- **Advanced Filtering**: Category, platform, and status-based filtering\n- **Rate Limiting**: Tiered access with usage tracking\n- **Authentication**: API key-based authentication with Supabase integration\n\n## Supported Platforms\n- **Polymarket**: Decentralized prediction markets on Polygon\n- **Kalshi**: US-regulated prediction markets\n- **Manifold Markets**: Community prediction markets\n\n## Rate Limits\n- **Free Tier**: 100 requests/minute, 10,000 requests/month\n- **Starter Tier**: 500 requests/minute, 50,000 requests/month\n- **Pro Tier**: 2,000 requests/minute, 200,000 requests/month\n- **Enterprise**: Custom limits\n\n## Authentication\n\n**Both API Key and Bearer Token are required for all requests.**\n\n### Required Headers\n```bash\ncurl -H \"X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d\" \\\n     -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0YWhyaWNvd2h6c3hmaHFudnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzA3NTMsImV4cCI6MjA3MjYwNjc1M30.aDVTn1GrFatkivIa7Lr1tADc8ud1T3nF5DnyVweaUcE\" \\\n     https://ptahricowhzsxfhqnvqe.supabase.co/functions/v1/markets-v1\n```\n\n### Individual Components\n- **API Key**: `X-API-Key` header for API access control\n- **Bearer Token**: `Authorization: Bearer` header for Supabase authentication",
+    "version": "1.0.0",
+    "contact": {
+      "name": "PolyRouter API Support",
+      "url": "https://polyrouter.io/support",
+      "email": "support@polyrouter.io"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.polyrouter.io/functions/v1",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/league-info": {
+      "get": {
+        "tags": [
+          "Sports API v1"
+        ],
+        "summary": "Get league information",
+        "description": "Retrieve league metadata and team information with platform-specific ID mappings. This endpoint provides canonical team identifiers (PolyRouter IDs) used across all sports endpoints. Supports NFL, NBA, NHL, and MLB.",
+        "parameters": [
+          {
+            "name": "league",
+            "in": "query",
+            "description": "Filter by specific league. Returns all leagues if not specified.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "nfl",
+                "nba",
+                "nhl",
+                "mlb",
+                ""
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "League information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "leagues": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/League"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/list-games": {
+      "get": {
+        "tags": [
+          "Sports API v1"
+        ],
+        "summary": "List available games",
+        "description": "Retrieve a directory of all upcoming NFL, NBA, NHL, and MLB games with their PolyRouter IDs for use with the Games API.",
+        "parameters": [
+          {
+            "name": "league",
+            "in": "query",
+            "description": "League ID (required)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "nfl",
+                "nba",
+                "nhl",
+                "mlb"
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter by game status",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "not_started",
+                "live",
+                "finished"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Games list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GameListItem"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/games/{game_id}": {
+      "get": {
+        "tags": [
+          "Sports API v1"
+        ],
+        "summary": "Get game markets",
+        "description": "Retrieve detailed betting markets for a specific game from multiple platforms (Polymarket, Kalshi, ProphetX, Novig, ProphetX) using PolyRouter game ID. Keep in mind, Polymarket and Kalshi often make game markets available the day of, while ProphetX, Novig, and SXBET don't currently offer historical data.",
+        "parameters": [
+          {
+            "name": "game_id",
+            "in": "path",
+            "description": "PolyRouter game ID (format: {AwayTeam}v{HomeTeam}{YYYYMMDD}@{League})",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "PITvBAL20251012@NFL"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi, prophetx, novig, sxbet",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "polymarket",
+                "kalshi",
+                "prophetx",
+                "novig",
+                "sxbet"
+              ]
+            }
+          },
+          {
+            "name": "market_type",
+            "in": "query",
+            "description": "Filter by market type: moneyline, spread, total, prop (player props)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "moneyline",
+                "spread",
+                "total",
+                "prop"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game markets retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GameMarkets"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/list-awards": {
+      "get": {
+        "tags": [
+          "Sports API v1"
+        ],
+        "summary": "List available awards",
+        "description": "Retrieve a directory of all available sports awards with their IDs and metadata. Use this endpoint to discover award IDs for the Awards API v1.",
+        "parameters": [
+          {
+            "name": "league",
+            "in": "query",
+            "description": "League ID (required)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "nfl",
+                "nba",
+                "nhl",
+                "mlb"
+              ]
+            }
+          },
+          {
+            "name": "award_type",
+            "in": "query",
+            "description": "Filter by award type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "season",
+            "in": "query",
+            "description": "Season year",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 2025
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Awards list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "awards": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/AwardListItem"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/Pagination"
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "league": {
+                              "type": "string"
+                            },
+                            "data_freshness": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/awards/{award_id}": {
+      "get": {
+        "tags": [
+          "Sports API v1"
+        ],
+        "summary": "Get award odds",
+        "description": "Retrieve real-time odds for a specific award (MVP, Rookie of the Year, etc.) from multiple prediction market platforms using award ID.",
+        "parameters": [
+          {
+            "name": "award_id",
+            "in": "path",
+            "description": "Award identifier (format: {league}_{award_type}_{season})",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "nfl_mvp_2025"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "polymarket",
+                "kalshi"
+              ]
+            }
+          },
+          {
+            "name": "odds_format",
+            "in": "query",
+            "description": "Odds format",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "american",
+                "decimal",
+                "probability"
+              ],
+              "default": "american"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Awards markets retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "awards": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Award"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/list-futures": {
+      "get": {
+        "tags": [
+          "Sports API v1"
+        ],
+        "summary": "List available futures",
+        "description": "Retrieve a directory of all available sports futures with their IDs and metadata. Use this endpoint to discover future IDs for the Futures API v1.",
+        "parameters": [
+          {
+            "name": "league",
+            "in": "query",
+            "description": "League ID (required)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "nfl",
+                "nba",
+                "nhl",
+                "mlb"
+              ]
+            }
+          },
+          {
+            "name": "future_type",
+            "in": "query",
+            "description": "Filter by future type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "championship",
+                "division",
+                "conference"
+              ]
+            }
+          },
+          {
+            "name": "season",
+            "in": "query",
+            "description": "Season year",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 2025
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Futures list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "futures": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/FutureListItem"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/Pagination"
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "league": {
+                              "type": "string"
+                            },
+                            "data_freshness": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/futures/{future_id}": {
+      "get": {
+        "tags": [
+          "Sports API v1"
+        ],
+        "summary": "Get futures odds",
+        "description": "Retrieve real-time odds for a specific futures market (championships, divisions, conferences) from multiple prediction market platforms using future ID.",
+        "parameters": [
+          {
+            "name": "future_id",
+            "in": "path",
+            "description": "Future identifier (format: {league}_{future_type}_{season})",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "nfl_superbowl_2025"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Filter by platforms (comma-separated): polymarket, kalshi",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "",
+                "polymarket",
+                "kalshi"
+              ]
+            }
+          },
+          {
+            "name": "odds_format",
+            "in": "query",
+            "description": "Odds format",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "american",
+                "decimal",
+                "probability"
+              ],
+              "default": "american"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Futures markets retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "futures": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Future"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key for authentication"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "timestamp"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Error timestamp"
+          }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "required": [
+          "request_time",
+          "cache_hit",
+          "data_freshness"
+        ],
+        "properties": {
+          "request_time": {
+            "type": "number",
+            "description": "Request processing time (ms)"
+          },
+          "cache_hit": {
+            "type": "boolean",
+            "description": "Whether response was served from cache"
+          },
+          "data_freshness": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data freshness timestamp"
+          }
+        }
+      },
+      "League": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "abbreviation",
+          "sport"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique league identifier",
+            "example": "nfl"
+          },
+          "name": {
+            "type": "string",
+            "description": "Full league name",
+            "example": "National Football League"
+          },
+          "abbreviation": {
+            "type": "string",
+            "description": "League abbreviation",
+            "example": "NFL"
+          },
+          "sport": {
+            "type": "string",
+            "description": "Sport type",
+            "example": "football"
+          },
+          "season": {
+            "type": "object",
+            "properties": {
+              "year": {
+                "type": "integer",
+                "description": "Season year"
+              },
+              "start_date": {
+                "type": "string",
+                "format": "date",
+                "description": "Season start date"
+              },
+              "end_date": {
+                "type": "string",
+                "format": "date",
+                "description": "Season end date"
+              }
+            }
+          },
+          "teams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Team"
+            },
+            "description": "Array of team objects"
+          }
+        }
+      },
+      "FutureListItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "future_name",
+          "league",
+          "season",
+          "future_type",
+          "category",
+          "platforms"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Future identifier",
+            "example": "nfl_superbowl_2025"
+          },
+          "future_name": {
+            "type": "string",
+            "description": "Full future name",
+            "example": "Super Bowl LX Winner"
+          },
+          "league": {
+            "type": "string",
+            "description": "League identifier",
+            "example": "nfl"
+          },
+          "season": {
+            "type": "integer",
+            "description": "Season year",
+            "example": 2025
+          },
+          "future_type": {
+            "type": "string",
+            "description": "Future type",
+            "enum": [
+              "championship",
+              "division",
+              "conference"
+            ],
+            "example": "championship"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category",
+            "example": "team"
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Platforms with configured markets"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "deadline": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Future deadline"
+              },
+              "description": {
+                "type": "string",
+                "description": "Future description"
+              },
+              "eligible_teams": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Eligible team IDs"
+              }
+            }
+          }
+        }
+      },
+      "Future": {
+        "type": "object",
+        "required": [
+          "id",
+          "future_name",
+          "league",
+          "season",
+          "future_type",
+          "category",
+          "markets"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Future identifier",
+            "example": "nfl_superbowl_2025"
+          },
+          "future_name": {
+            "type": "string",
+            "description": "Full future name",
+            "example": "Super Bowl LX Winner"
+          },
+          "league": {
+            "type": "string",
+            "description": "League identifier",
+            "example": "nfl"
+          },
+          "season": {
+            "type": "integer",
+            "description": "Season year",
+            "example": 2025
+          },
+          "future_type": {
+            "type": "string",
+            "description": "Future type",
+            "enum": [
+              "championship",
+              "division",
+              "conference"
+            ],
+            "example": "championship"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category",
+            "example": "team"
+          },
+          "markets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "platform": {
+                  "type": "string",
+                  "description": "Platform name"
+                },
+                "market_id": {
+                  "type": "string",
+                  "description": "Platform-specific market identifier"
+                },
+                "outcomes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "team_polyrouter_id": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "PolyRouter team ID"
+                      },
+                      "outcome_name": {
+                        "type": "string",
+                        "description": "Team name"
+                      },
+                      "odds": {
+                        "type": "object",
+                        "properties": {
+                          "american": {
+                            "type": "string",
+                            "description": "American odds"
+                          },
+                          "decimal": {
+                            "type": "number",
+                            "description": "Decimal odds"
+                          },
+                          "implied_probability": {
+                            "type": "number",
+                            "description": "Implied probability"
+                          }
+                        }
+                      },
+                      "volume_24h": {
+                        "type": "number",
+                        "description": "24-hour trading volume"
+                      },
+                      "last_trade_price": {
+                        "type": "number",
+                        "description": "Last trade price (0-1)"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "description": "Platform-specific metadata"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Future metadata and platform-specific info"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "has_more",
+          "next_offset"
+        ],
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of results per page"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Current page offset"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether more pages exist"
+          },
+          "next_offset": {
+            "type": "number",
+            "description": "Offset for next page"
+          }
+        }
+      },
+      "AwardListItem": {
+        "type": "object",
+        "required": [
+          "id",
+          "award_name",
+          "league",
+          "season",
+          "award_type",
+          "platforms"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Award identifier",
+            "example": "nfl_mvp_2025"
+          },
+          "award_name": {
+            "type": "string",
+            "description": "Full award name",
+            "example": "NFL MVP"
+          },
+          "league": {
+            "type": "string",
+            "description": "League identifier",
+            "example": "nfl"
+          },
+          "season": {
+            "type": "integer",
+            "description": "Season year",
+            "example": 2025
+          },
+          "award_type": {
+            "type": "string",
+            "description": "Award type code",
+            "example": "mvp"
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Platforms with configured markets"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "deadline": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Award deadline"
+              },
+              "description": {
+                "type": "string",
+                "description": "Award description"
+              },
+              "eligibility": {
+                "type": "string",
+                "description": "Eligibility criteria"
+              }
+            }
+          }
+        }
+      },
+      "Award": {
+        "type": "object",
+        "required": [
+          "id",
+          "award_name",
+          "league",
+          "season",
+          "award_type",
+          "markets"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Award identifier",
+            "example": "nfl_mvp_2025"
+          },
+          "award_name": {
+            "type": "string",
+            "description": "Full award name",
+            "example": "NFL MVP"
+          },
+          "league": {
+            "type": "string",
+            "description": "League identifier",
+            "example": "nfl"
+          },
+          "season": {
+            "type": "integer",
+            "description": "Season year",
+            "example": 2025
+          },
+          "award_type": {
+            "type": "string",
+            "description": "Award type code",
+            "example": "mvp"
+          },
+          "markets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "platform": {
+                  "type": "string",
+                  "description": "Platform name"
+                },
+                "market_id": {
+                  "type": "string",
+                  "description": "Platform-specific market identifier"
+                },
+                "candidates": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "player_name": {
+                        "type": "string",
+                        "description": "Player or coach name"
+                      },
+                      "team_polyrouter_id": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "PolyRouter team ID"
+                      },
+                      "odds": {
+                        "type": "object",
+                        "properties": {
+                          "american": {
+                            "type": "string",
+                            "description": "American odds"
+                          },
+                          "decimal": {
+                            "type": "number",
+                            "description": "Decimal odds"
+                          },
+                          "implied_probability": {
+                            "type": "number",
+                            "description": "Implied probability"
+                          }
+                        }
+                      },
+                      "volume_24h": {
+                        "type": "number",
+                        "description": "24-hour trading volume"
+                      },
+                      "last_trade_price": {
+                        "type": "number",
+                        "description": "Last trade price (0-1)"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "description": "Platform-specific metadata"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Award metadata and platform-specific info"
+          }
+        }
+      },
+      "GameListItem": {
+        "type": "object",
+        "required": [
+          "polyrouter_id",
+          "title",
+          "away_team",
+          "home_team",
+          "status"
+        ],
+        "properties": {
+          "polyrouter_id": {
+            "type": "string",
+            "description": "PolyRouter game ID",
+            "example": "DETvKC20251013"
+          },
+          "prophetx_event_id": {
+            "type": "integer",
+            "description": "ProphetX event ID"
+          },
+          "title": {
+            "type": "string",
+            "description": "Game title with team names",
+            "example": "Detroit Lions at Kansas City Chiefs"
+          },
+          "away_team": {
+            "type": "object",
+            "properties": {
+              "abbreviation": {
+                "type": "string",
+                "description": "Team abbreviation"
+              },
+              "name": {
+                "type": "string",
+                "description": "Full team name"
+              }
+            }
+          },
+          "home_team": {
+            "type": "object",
+            "properties": {
+              "abbreviation": {
+                "type": "string",
+                "description": "Team abbreviation"
+              },
+              "name": {
+                "type": "string",
+                "description": "Full team name"
+              }
+            }
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Game start time (ISO 8601 UTC)"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "not_started",
+              "live",
+              "finished"
+            ],
+            "description": "Game status"
+          },
+          "tournament": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer",
+                "description": "Tournament ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "Tournament name"
+              }
+            }
+          },
+          "sport": {
+            "type": "string",
+            "description": "Sport name"
+          }
+        }
+      },
+      "GameMarkets": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "teams",
+          "sport",
+          "league",
+          "markets"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "PolyRouter game ID",
+            "example": "DETvKC20251012"
+          },
+          "title": {
+            "type": "string",
+            "description": "Game title with team names"
+          },
+          "teams": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Array of PolyRouter team IDs"
+          },
+          "sport": {
+            "type": "string",
+            "description": "Sport type"
+          },
+          "league": {
+            "type": "string",
+            "description": "League identifier"
+          },
+          "description": {
+            "type": "string",
+            "description": "Game description"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Game start time (ISO 8601)"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "live",
+              "final"
+            ],
+            "description": "Game status"
+          },
+          "markets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "platform": {
+                  "type": "string",
+                  "description": "Platform name"
+                },
+                "event_id": {
+                  "type": "string",
+                  "description": "Platform event identifier"
+                },
+                "outcomes": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Outcome name"
+                      },
+                      "price": {
+                        "type": "number",
+                        "description": "Current price (0-1)"
+                      },
+                      "volume": {
+                        "type": "number",
+                        "description": "Trading volume"
+                      },
+                      "status": {
+                        "type": "string",
+                        "description": "Outcome status"
+                      }
+                    }
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "description": "Platform-specific metadata"
+                }
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional game metadata"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Validation error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AuthenticationError": {
+        "description": "Authentication error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Resource not found error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

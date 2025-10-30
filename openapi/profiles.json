@@ -1,0 +1,659 @@
+{
+  "openapi": "3.1.0",
+  "x-mintlify": {
+    "auth": {
+      "apiKey": {
+        "header": "X-API-Key",
+        "default": "5fa709a5-0634-44c3-a991-57166d3c376d"
+      }
+    },
+    "playground": {
+      "display": "interactive"
+    }
+  },
+  "info": {
+    "title": "PolyRouter Prediction Markets API",
+    "description": "Comprehensive API for accessing prediction market data across multiple platforms including Polymarket, Kalshi, and Manifold Markets.\n\n## Features\n- **Unified Data Access**: Single API for multiple prediction market platforms\n- **Real-time Data**: Live market prices, volumes, and trending analysis\n- **Historical Data**: Price history and market analytics\n- **Advanced Filtering**: Category, platform, and status-based filtering\n- **Rate Limiting**: Tiered access with usage tracking\n- **Authentication**: API key-based authentication with Supabase integration\n\n## Supported Platforms\n- **Polymarket**: Decentralized prediction markets on Polygon\n- **Kalshi**: US-regulated prediction markets\n- **Manifold Markets**: Community prediction markets\n\n## Rate Limits\n- **Free Tier**: 100 requests/minute, 10,000 requests/month\n- **Starter Tier**: 500 requests/minute, 50,000 requests/month\n- **Pro Tier**: 2,000 requests/minute, 200,000 requests/month\n- **Enterprise**: Custom limits\n\n## Authentication\n\n**Both API Key and Bearer Token are required for all requests.**\n\n### Required Headers\n```bash\ncurl -H \"X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d\" \\\n     -H \"Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB0YWhyaWNvd2h6c3hmaHFudnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcwMzA3NTMsImV4cCI6MjA3MjYwNjc1M30.aDVTn1GrFatkivIa7Lr1tADc8ud1T3nF5DnyVweaUcE\" \\\n     https://ptahricowhzsxfhqnvqe.supabase.co/functions/v1/markets-v1\n```\n\n### Individual Components\n- **API Key**: `X-API-Key` header for API access control\n- **Bearer Token**: `Authorization: Bearer` header for Supabase authentication",
+    "version": "1.0.0",
+    "contact": {
+      "name": "PolyRouter API Support",
+      "url": "https://polyrouter.io/support",
+      "email": "support@polyrouter.io"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.polyrouter.io/functions/v1",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/profile/info": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "Get user profile information",
+        "description": "Retrieve user profile information and optional trading metrics from Kalshi and Polymarket platforms using a unified interface.",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Platform identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "kalshi",
+                "polymarket"
+              ]
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "description": "User identifier (nickname for Kalshi, address for Polymarket)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_metrics",
+            "in": "query",
+            "description": "Include trading metrics in response",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile information retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "profile": {
+                          "$ref": "#/components/schemas/UserProfile"
+                        },
+                        "metrics": {
+                          "$ref": "#/components/schemas/UserMetrics"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/Meta"
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "503": {
+            "description": "Platform unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/profile/trades": {
+      "get": {
+        "tags": [
+          "Profiles"
+        ],
+        "summary": "Get user trade history",
+        "description": "Retrieve user trade history with pagination support from Kalshi and Polymarket platforms.",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Platform identifier",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "kalshi",
+                "polymarket"
+              ]
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "description": "User identifier (nickname for Kalshi, address for Polymarket)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of trades to return (1-100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor for next page",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trade history retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "trades": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/UserTrade"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/ProfilePagination"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/Meta"
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          },
+          "503": {
+            "description": "Platform unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "API key for authentication"
+      }
+    },
+    "schemas": {
+      "ProfilePagination": {
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "has_more"
+        ],
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of trades"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of trades per page"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether more pages exist"
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for next page"
+          }
+        }
+      },
+      "UserProfile": {
+        "type": "object",
+        "required": [
+          "platform",
+          "user_id",
+          "display_name"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "kalshi",
+              "polymarket"
+            ],
+            "description": "Source platform"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "User display name"
+          },
+          "profile_image": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "Profile image URL"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "User description/bio"
+          },
+          "joined_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Account creation timestamp"
+          },
+          "follower_count": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of followers"
+          },
+          "following_count": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of users following"
+          },
+          "profile_view_count": {
+            "type": "number",
+            "nullable": true,
+            "description": "Profile view count"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Platform-specific metadata"
+          }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "required": [
+          "request_time",
+          "cache_hit",
+          "data_freshness"
+        ],
+        "properties": {
+          "request_time": {
+            "type": "number",
+            "description": "Request processing time (ms)"
+          },
+          "cache_hit": {
+            "type": "boolean",
+            "description": "Whether response was served from cache"
+          },
+          "data_freshness": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data freshness timestamp"
+          }
+        }
+      },
+      "UserMetrics": {
+        "type": "object",
+        "required": [
+          "platform",
+          "user_id"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "kalshi",
+              "polymarket"
+            ],
+            "description": "Source platform"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "volume": {
+            "type": "number",
+            "nullable": true,
+            "description": "Total trading volume"
+          },
+          "pnl": {
+            "type": "number",
+            "nullable": true,
+            "description": "Profit and loss"
+          },
+          "roi": {
+            "type": "number",
+            "nullable": true,
+            "description": "Return on investment"
+          },
+          "num_markets_traded": {
+            "type": "number",
+            "nullable": true,
+            "description": "Number of markets traded"
+          },
+          "portfolio_value": {
+            "type": "number",
+            "nullable": true,
+            "description": "Current portfolio value"
+          },
+          "open_interest": {
+            "type": "number",
+            "nullable": true,
+            "description": "Open interest amount"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Platform-specific metrics metadata"
+          }
+        }
+      },
+      "Pagination": {
+        "type": "object",
+        "required": [
+          "total",
+          "limit",
+          "offset",
+          "has_more",
+          "next_offset"
+        ],
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of results"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Number of results per page"
+          },
+          "offset": {
+            "type": "number",
+            "description": "Current page offset"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether more pages exist"
+          },
+          "next_offset": {
+            "type": "number",
+            "description": "Offset for next page"
+          }
+        }
+      },
+      "UserTrade": {
+        "type": "object",
+        "required": [
+          "platform",
+          "trade_id",
+          "user_id",
+          "market_id",
+          "side",
+          "outcome",
+          "price",
+          "size",
+          "timestamp"
+        ],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "kalshi",
+              "polymarket"
+            ],
+            "description": "Source platform"
+          },
+          "trade_id": {
+            "type": "string",
+            "description": "Unique trade identifier"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User identifier"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Market identifier"
+          },
+          "ticker": {
+            "type": "string",
+            "nullable": true,
+            "description": "Market ticker symbol"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "description": "Market title"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "description": "Trade side"
+          },
+          "outcome": {
+            "type": "string",
+            "description": "Outcome traded"
+          },
+          "price": {
+            "type": "number",
+            "description": "Trade price"
+          },
+          "size": {
+            "type": "number",
+            "description": "Trade size"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Trade timestamp"
+          },
+          "transaction_hash": {
+            "type": "string",
+            "nullable": true,
+            "description": "Blockchain transaction hash"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Platform-specific trade metadata"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "timestamp"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Error code",
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional error details"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Error timestamp"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ValidationError": {
+        "description": "Validation error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AuthenticationError": {
+        "description": "Authentication error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFoundError": {
+        "description": "Resource not found error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "meta": {
+                  "$ref": "#/components/schemas/Meta"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
