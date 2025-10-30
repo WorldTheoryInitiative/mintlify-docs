@@ -96,25 +96,25 @@ GET /price-history-v2
 
 #### Basic Request - Polymarket
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=516710&start_ts=1757036253&end_ts=1757270253&interval=1h&limit=10" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/price-history-v2?market_ids=516710&start_ts=1757036253&end_ts=1757270253&interval=1h&limit=10" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Basic Request - Kalshi
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=KXELONMARS-99&start_ts=1757036253&end_ts=1757270253&interval=1h&limit=10" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/price-history-v2?market_ids=KXELONMARS-99&start_ts=1757036253&end_ts=1757270253&interval=1h&limit=10" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Multiple Markets
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=516710,KXELONMARS-99,will-elon-musk-rejoin-the-trump-administration-this-year-1749202282770&start_ts=1757036253&end_ts=1757270253&interval=1h&limit=50" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/price-history-v2?market_ids=516710,KXELONMARS-99,will-elon-musk-rejoin-the-trump-administration-this-year-1749202282770&start_ts=1757036253&end_ts=1757270253&interval=1h&limit=50" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### High-Frequency Data
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=516710&start_ts=1757036253&end_ts=1757270253&interval=1m&limit=200" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/price-history-v2?market_ids=516710&start_ts=1757036253&end_ts=1757270253&interval=1m&limit=200" \
   -H "X-API-Key: your-api-key" \
 ```
 

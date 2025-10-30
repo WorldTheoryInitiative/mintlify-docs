@@ -30,19 +30,19 @@ The List Awards API v1 offers:
 
 ### Get All NFL Awards
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/list-awards-v1?league=nfl" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-awards-v1?league=nfl" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Get Only MVP Awards
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/list-awards-v1?league=nfl&award_type=mvp" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-awards-v1?league=nfl&award_type=mvp" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Get NBA Awards
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/list-awards-v1?league=nba" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-awards-v1?league=nba" \
   -H "X-API-Key: your-api-key"
 ```
 
@@ -264,7 +264,7 @@ async function getAwardsList(league, awardType = null) {
   if (awardType) params.append('award_type', awardType);
   
   const response = await fetch(
-    `https://api.polyrouter.io/functions/v1/list-awards-v1?${params}`,
+    `https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-awards-v1?${params}`,
     {
       headers: {
         'X-API-Key': process.env.API_KEY
@@ -296,7 +296,7 @@ def get_awards_list(league, award_type=None):
         params['award_type'] = award_type
     
     response = requests.get(
-        'https://api.polyrouter.io/functions/v1/list-awards-v1',
+        'https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-awards-v1',
         params=params,
         headers={'X-API-Key': os.getenv('API_KEY')}
     )

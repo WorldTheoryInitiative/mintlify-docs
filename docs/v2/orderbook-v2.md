@@ -76,14 +76,14 @@ GET /markets/{market_id}/orderbook
 #### Polymarket Orderbook
 
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/markets/524153/orderbook" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets/524153/orderbook" \
   -H "X-API-Key: your-api-key"
 ```
 
 #### Kalshi Orderbook
 
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/markets/KXBALANCE-29/orderbook" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets/KXBALANCE-29/orderbook" \
   -H "X-API-Key: your-api-key"
 ```
 
@@ -373,7 +373,7 @@ console.log('Kalshi YES depth:', kalshiOrderbook.data.yes.depth);
 ```javascript
 const fetchOrderbook = async (marketId) => {
   const response = await fetch(
-    `https://api.polyrouter.io/functions/v1/markets/${marketId}/orderbook`,
+    `https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets/${marketId}/orderbook`,
     {
       headers: {
         'X-API-Key': 'your-api-key',
@@ -403,7 +403,7 @@ console.log('Kalshi orderbook:', kalshiOrderbook);
 import requests
 
 def fetch_orderbook(market_id, api_key):
-    url = f"https://api.polyrouter.io/functions/v1/markets/{market_id}/orderbook"
+    url = f"https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets/{market_id}/orderbook"
     headers = {
         "X-API-Key": api_key
     }
@@ -426,17 +426,17 @@ print(f"YES depth: {kalshi_ob['data']['yes']['depth']}")
 
 ```bash
 # Polymarket orderbook
-curl -X GET "https://api.polyrouter.io/functions/v1/markets/524153/orderbook" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets/524153/orderbook" \
   -H "X-API-Key: your-api-key" \
   | jq '.data'
 
 # Kalshi orderbook
-curl -X GET "https://api.polyrouter.io/functions/v1/markets/KXBALANCE-29/orderbook" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets/KXBALANCE-29/orderbook" \
   -H "X-API-Key: your-api-key" \
   | jq '.data'
 
 # Get best bid/ask
-curl -X GET "https://api.polyrouter.io/functions/v1/markets/524153/orderbook" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets/524153/orderbook" \
   -H "X-API-Key: your-api-key" \
   | jq '{
     best_yes_bid: .data.yes.bids[0],

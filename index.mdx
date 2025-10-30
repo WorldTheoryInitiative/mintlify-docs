@@ -3,6 +3,16 @@ title: "Welcome to PolyRouter"
 description: "The unified API for prediction markets"
 ---
 
+<Warning>
+  **Development Environment:** This documentation is using staging credentials and pointing to the development API. 
+  
+  **Base URL:** `https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1`
+  
+  **Test API Key:** `test_1234567890abcdef`
+</Warning>
+
+
+
 <img
   className="block dark:hidden"
   src="/images/logo_w_color.png"
@@ -57,14 +67,14 @@ PolyRouter provides **unified API access to 7 prediction market platforms**: Pol
 <CodeGroup>
 
 ```bash cURL
-curl "https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=5" \
-  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
+curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?platform=polymarket&limit=5" \
+  -H "X-API-Key: test_1234567890abcdef"
 ```
 
 ```javascript JavaScript
 const response = await fetch(
-  'https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=5',
-  { headers: { 'X-API-Key': '5fa709a5-0634-44c3-a991-57166d3c376d' } }
+  'https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?platform=polymarket&limit=5',
+  { headers: { 'X-API-Key': 'test_1234567890abcdef' } }
 );
 
 const data = await response.json();
@@ -99,12 +109,12 @@ data.markets.forEach(market => {
 
 ```bash
 # Find today's games
-curl "https://api.polyrouter.io/functions/v1/list-games-v1?league=nfl&limit=5" \
-  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
+curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-games-v1?league=nfl&limit=5" \
+  -H "X-API-Key: test_1234567890abcdef"
 
 # Get odds for a specific game
-curl "https://api.polyrouter.io/functions/v1/games-v1/BUFvKC20251020" \
-  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
+curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/games-v1/BUFvKC20251020" \
+  -H "X-API-Key: test_1234567890abcdef"
 ```
 
 <Info>
@@ -114,8 +124,8 @@ curl "https://api.polyrouter.io/functions/v1/games-v1/BUFvKC20251020" \
 ### Query Price History
 
 ```bash
-curl "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=516710&interval=1h&limit=24" \
-  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
+curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/price-history-v2?market_ids=516710&interval=1h&limit=24" \
+  -H "X-API-Key: test_1234567890abcdef"
 ```
 
 ## Supported Platforms

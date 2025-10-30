@@ -515,35 +515,35 @@ Each platform handles status filtering differently:
 
 ### Basic Platform Discovery
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/platforms-v2" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/platforms-v2" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets.platforms[] | {platform, display_name, endpoints}'
 ```
 
 ### Check Platform Health
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/platforms-v2" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/platforms-v2" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets.health'
 ```
 
 ### Get ID Formats
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/platforms-v2" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/platforms-v2" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets.platforms[] | {platform, id_format}'
 ```
 
 ### Check Feature Support
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/platforms-v2" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/platforms-v2" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets.platforms[] | {platform, features}'
 ```
 
 ### Sports Platforms
 ```bash
-curl -X GET "https://api.polyrouter.io/functions/v1/platforms-v2" \
+curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/platforms-v2" \
   -H "X-API-Key: your-api-key" \
   | jq '.sports.platforms[] | {platform, display_name, supported_leagues: .features.supported_leagues}'
 ```
@@ -553,7 +553,7 @@ curl -X GET "https://api.polyrouter.io/functions/v1/platforms-v2" \
 ### JavaScript/Node.js
 ```javascript
 const fetchPlatforms = async () => {
-  const response = await fetch('https://api.polyrouter.io/functions/v1/platforms-v2', {
+  const response = await fetch('https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/platforms-v2', {
     headers: {
       'X-API-Key': 'your-api-key',
     }
@@ -602,7 +602,7 @@ import requests
 import re
 
 def fetch_platforms():
-    url = "https://api.polyrouter.io/functions/v1/platforms-v2"
+    url = "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/platforms-v2"
     headers = {
         "X-API-Key": "your-api-key",
     }
@@ -701,7 +701,7 @@ interface PlatformsResponse {
 }
 
 const fetchPlatforms = async (): Promise<PlatformsResponse> => {
-  const response = await fetch('https://api.polyrouter.io/functions/v1/platforms-v2', {
+  const response = await fetch('https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/platforms-v2', {
     headers: {
       'X-API-Key': 'your-api-key',
     }
