@@ -27,9 +27,9 @@ description: "The unified API for prediction markets"
 ## What is PolyRouter?
 
 <Warning>
-  **Open Beta:** PolyRouter is currently in open beta. All features are free with 10 req/sec rate limits. We're actively improving the platform based on your feedback! 
+  **Open Beta:** PolyRouter is currently in open beta. All features are free with 10 req per minute rate limits. We're actively improving the platform based on your feedback! 
 
-  MESSAGE **@fieldviolence** ON X IF YOU HAVE ANY QUESTIONS OR NEED HELP!
+  IF YOU NEED HIGHER RATE LIMITS, OR HAVE ANY QUESTIONS, MESSAGE **@fieldviolence** ON X!
 </Warning>
 
 PolyRouter provides **unified API access to 7 prediction market platforms**: Polymarket, Kalshi, Manifold Markets, Limitless, ProphetX, Novig, and SX.bet. Get real-time market data, sports betting odds, and historical prices through one simple API.
@@ -118,7 +118,7 @@ curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/games-v1/BUFvKC20251
 ```
 
 <Info>
-  **Game IDs** follow the format `{AwayTeam}v{HomeTeam}{YYYYMMDD}`. Use `/list-games-v1` to discover available games.
+  **Game IDs** follow the format `{AwayTeam}v{HomeTeam}{YYYYMMDD}`. Use `/list-games` to discover available games.
 </Info>
 
 ### Query Price History
@@ -180,7 +180,7 @@ curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/price-history-v2?mar
 ## Rate Limits
 
 <Note>
-  **Open Beta:** All users currently have **10 requests per second** while we optimize our infrastructure. No paid plans yet — stay tuned for tiered pricing coming soon!
+  **Open Beta:** All users currently have **10 requests per minute** while we optimize our infrastructure. No paid plans yet — stay tuned for tiered pricing coming soon!
 </Note>
 
 ## Resources

@@ -27,7 +27,8 @@
             "group": "Introduction",
             "pages": [
               "index",
-              "api-reference/introduction"
+              "api-reference/introduction",
+              "api-reference/pagination"
             ]
           },
           {
@@ -76,14 +77,6 @@
             "pages": [
               "GET /series",
               "GET /series/{series_id}"
-            ]
-          },
-          {
-            "group": "Profiles",
-            "openapi": "openapi/profiles.json",
-            "pages": [
-              "GET /profile/info",
-              "GET /profile/trades"
             ]
           }
         ]

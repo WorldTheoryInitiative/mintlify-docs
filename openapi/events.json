@@ -48,7 +48,7 @@
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi",
+            "description": "Filter by platform (single value only, not comma-separated): polymarket, kalshi",
             "required": false,
             "schema": {
               "type": "string",
@@ -88,12 +88,12 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of results per page (1-100)",
+            "description": "Number of results per page (1-25)",
             "required": false,
             "schema": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 100,
+              "maximum": 25,
               "default": 10
             }
           },

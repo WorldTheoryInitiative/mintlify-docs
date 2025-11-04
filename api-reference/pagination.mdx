@@ -1,0 +1,141 @@
+---
+title: 'Pagination Guide'
+description: 'Learn how to paginate through API results efficiently'
+---
+
+# Pagination Guide
+
+Many endpoints support cursor-based pagination to efficiently navigate through large result sets. Here's how to use it:
+
+## Basic Usage
+
+Most list endpoints support two query parameters:
+
+- **`limit`** - Number of results per page (1-25, default varies by endpoint)
+- **`cursor`** - Opaque token for fetching the next page
+
+## Making Your First Request
+
+```bash
+curl "https://api.polyrouter.io/functions/v1/markets?limit=10" \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+The response includes a `pagination` object:
+
+```json
+{
+  "markets": [...],
+  "pagination": {
+    "total": 150,
+    "limit": 10,
+    "has_more": true,
+    "next_cursor": "eyJwbGF0Zm9ybXMiOnsia2Fsc2hpIjp7..."
+  }
+}
+```
+
+## Getting the Next Page
+
+Use the `next_cursor` from the previous response:
+
+```bash
+curl "https://api.polyrouter.io/functions/v1/markets?limit=10&cursor=eyJwbGF0Zm9ybXMiOnsia2Fsc2hpIjp7..." \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+
+## Complete Example
+
+<Tabs>
+  <Tab title="JavaScript">
+```javascript
+async function fetchAllMarkets() {
+  const allMarkets = [];
+  let cursor = null;
+  let hasMore = true;
+
+  while (hasMore) {
+    const url = cursor 
+      ? `https://api.polyrouter.io/functions/v1/markets?cursor=${cursor}&limit=25`
+      : `https://api.polyrouter.io/functions/v1/markets?limit=25`;
+    
+    const response = await fetch(url, {
+      headers: {
+        'X-API-Key': 'YOUR_API_KEY'
+      }
+    });
+    
+    const data = await response.json();
+    allMarkets.push(...data.markets);
+    
+    hasMore = data.pagination.has_more;
+    cursor = data.pagination.next_cursor;
+  }
+  
+  return allMarkets;
+}
+```
+  </Tab>
+  <Tab title="Python">
+```python
+import requests
+
+def fetch_all_markets():
+    all_markets = []
+    cursor = None
+    has_more = True
+    
+    headers = {'X-API-Key': 'YOUR_API_KEY'}
+    
+    while has_more:
+        url = 'https://api.polyrouter.io/functions/v1/markets'
+        params = {'limit': 25}
+        if cursor:
+            params['cursor'] = cursor
+        
+        response = requests.get(url, headers=headers, params=params)
+        data = response.json()
+        
+        all_markets.extend(data['markets'])
+        has_more = data['pagination']['has_more']
+        cursor = data['pagination'].get('next_cursor')
+    
+    return all_markets
+```
+  </Tab>
+  <Tab title="cURL">
+```bash
+# First page
+curl "https://api.polyrouter.io/functions/v1/markets?limit=25" \
+  -H "X-API-Key: YOUR_API_KEY"
+
+# Next page (use next_cursor from response)
+curl "https://api.polyrouter.io/functions/v1/markets?limit=25&cursor=eyJ..." \
+  -H "X-API-Key: YOUR_API_KEY"
+```
+  </Tab>
+</Tabs>
+
+## Important Notes
+
+<Warning>
+**Changing filters mid-pagination:** If you change query parameters (like `platform`, `status`, or `query`) between requests, the cursor will be invalidated. Start pagination from the first page when changing filters.
+</Warning>
+
+<Note>
+**Cursor lifespan:** Cursors are designed for immediate use within a pagination session. Don't store them long-term as they may become invalid.
+</Note>
+
+## Pagination Tips
+
+1. **Choose appropriate limits:** 
+   - Use `limit=25` (maximum) for bulk operations
+   - Use smaller limits (5-10) for real-time updates
+   - Default limits vary by endpoint
+
+2. **Check for more pages:** Always check `has_more` or whether `next_cursor` is `null` before making another request
+
+3. **Rate limits:** Even with cursors, you're still subject to rate limits (10 req per minute during beta)
+
+4. **Platform filtering:** When using `platform` parameter, only one platform value is supported per query (not comma-separated)
+
