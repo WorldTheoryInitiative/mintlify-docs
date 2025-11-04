@@ -27,7 +27,8 @@
             "group": "Introduction",
             "pages": [
               "index",
-              "api-reference/introduction"
+              "api-reference/introduction",
+              "api-reference/pagination"
             ]
           },
           {

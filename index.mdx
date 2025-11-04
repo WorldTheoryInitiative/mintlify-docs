@@ -17,9 +17,9 @@ description: "The unified API for prediction markets"
 ## What is PolyRouter?
 
 <Warning>
-  **Open Beta:** PolyRouter is currently in open beta. All features are free with 10 req/sec rate limits. We're actively improving the platform based on your feedback! 
+  **Open Beta:** PolyRouter is currently in open beta. All features are free with 10 req per minute rate limits. We're actively improving the platform based on your feedback! 
 
-  MESSAGE **@fieldviolence** ON X IF YOU HAVE ANY QUESTIONS OR NEED HELP!
+  IF YOU NEED HIGHER RATE LIMITS, OR HAVE ANY QUESTIONS, MESSAGE **@fieldviolence** ON X!
 </Warning>
 
 PolyRouter provides **unified API access to 7 prediction market platforms**: Polymarket, Kalshi, Manifold Markets, Limitless, ProphetX, Novig, and SX.bet. Get real-time market data, sports betting odds, and historical prices through one simple API.
@@ -57,13 +57,13 @@ PolyRouter provides **unified API access to 7 prediction market platforms**: Pol
 <CodeGroup>
 
 ```bash cURL
-curl "https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=5" \
+curl "https://api.polyrouter.io/functions/v1/markets?platform=polymarket&limit=5" \
   -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 ```javascript JavaScript
 const response = await fetch(
-  'https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=5',
+  'https://api.polyrouter.io/functions/v1/markets?platform=polymarket&limit=5',
   { headers: { 'X-API-Key': '5fa709a5-0634-44c3-a991-57166d3c376d' } }
 );
 
@@ -99,22 +99,22 @@ data.markets.forEach(market => {
 
 ```bash
 # Find today's games
-curl "https://api.polyrouter.io/functions/v1/list-games-v1?league=nfl&limit=5" \
+curl "https://api.polyrouter.io/functions/v1/list-games?league=nfl&limit=5" \
   -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 
 # Get odds for a specific game
-curl "https://api.polyrouter.io/functions/v1/games-v1/BUFvKC20251020" \
+curl "https://api.polyrouter.io/functions/v1/games/BUFvKC20251020" \
   -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 <Info>
-  **Game IDs** follow the format `{AwayTeam}v{HomeTeam}{YYYYMMDD}`. Use `/list-games-v1` to discover available games.
+  **Game IDs** follow the format `{AwayTeam}v{HomeTeam}{YYYYMMDD}`. Use `/list-games` to discover available games.
 </Info>
 
 ### Query Price History
 
 ```bash
-curl "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=516710&interval=1h&limit=24" \
+curl "https://api.polyrouter.io/functions/v1/price-history?market_ids=516710&interval=1h&limit=24" \
   -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
@@ -170,7 +170,7 @@ curl "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=516710&
 ## Rate Limits
 
 <Note>
-  **Open Beta:** All users currently have **10 requests per second** while we optimize our infrastructure. No paid plans yet — stay tuned for tiered pricing coming soon!
+  **Open Beta:** All users currently have **10 requests per minute** while we optimize our infrastructure. No paid plans yet — stay tuned for tiered pricing coming soon!
 </Note>
 
 ## Resources
