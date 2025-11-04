@@ -43,12 +43,12 @@
           "v2"
         ],
         "summary": "List markets",
-        "description": "Retrieve real-time markets across all supported platforms without database dependency. This endpoint directly proxies external platform APIs and returns data immediately for maximum freshness.",
+        "description": "Retrieve real-time markets across all supported platforms. Keep in mind, search queries will not filter by status, and return based on relevance.",
         "parameters": [
           {
             "name": "platform",
             "in": "query",
-            "description": "Filter by platforms (comma-separated): polymarket, kalshi, limitless, manifold",
+            "description": "Filter by platform (single value only, not comma-separated): polymarket, kalshi, limitless, manifold",
             "required": false,
             "schema": {
               "type": "string",
@@ -85,12 +85,12 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Number of results per page (1-100)",
+            "description": "Number of results per page (1-25)",
             "required": false,
             "schema": {
               "type": "integer",
               "minimum": 1,
-              "maximum": 100,
+              "maximum": 25,
               "default": 5
             }
           },
