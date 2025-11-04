@@ -57,7 +57,9 @@
               "GET /markets",
               "GET /markets/{market_id}",
               "GET /price-history",
-              "GET /markets/{market_id}/orderbook"
+              "GET /markets/{market_id}/orderbook",
+              "GET /historical-orderbook",
+              "GET /trades"
             ]
           },
           {

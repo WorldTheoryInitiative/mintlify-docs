@@ -607,6 +607,444 @@
           }
         }
       }
+    },
+    "/historical-orderbook": {
+      "get": {
+        "tags": [
+          "v2"
+        ],
+        "summary": "Get historical orderbook snapshots",
+        "description": "Retrieve historical orderbook snapshots that are collected every 30 minutes for Polymarket markets. This endpoint allows you to query past orderbook states to analyze market depth, liquidity changes, and trading patterns over time.",
+        "parameters": [
+          {
+            "name": "market_id",
+            "in": "query",
+            "description": "Polymarket market ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "643518"
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "description": "Platform name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "polymarket,kalshi"
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "description": "Start time in Unix timestamp (milliseconds)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1761895254000
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "description": "End time in Unix timestamp (milliseconds)",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1761956492000
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of snapshots to return (max: 500)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historical orderbook snapshots retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/HistoricalOrderbookResponse"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                },
+                "example": {
+                  "data": {
+                    "market_id": "643518",
+                    "snapshots": [
+                      {
+                        "snapshot_id": "916f023a-29b0-4928-ba78-a0b730c46a3e",
+                        "market_id": "643518",
+                        "platform": "polymarket",
+                        "timestamp": "2025-11-01T00:13:29.931+00:00",
+                        "yes": {
+                          "bids": [
+                            {
+                              "price": 0.001,
+                              "size": 10889
+                            },
+                            {
+                              "price": 0.002,
+                              "size": 37.5
+                            }
+                          ],
+                          "asks": [
+                            {
+                              "price": 0.999,
+                              "size": 65
+                            },
+                            {
+                              "price": 0.99,
+                              "size": 100
+                            }
+                          ],
+                          "depth": 12710.35
+                        },
+                        "no": {
+                          "bids": [
+                            {
+                              "price": 0.001,
+                              "size": 65
+                            },
+                            {
+                              "price": 0.01,
+                              "size": 100
+                            }
+                          ],
+                          "asks": [
+                            {
+                              "price": 0.999,
+                              "size": 10889
+                            },
+                            {
+                              "price": 0.998,
+                              "size": 37.5
+                            }
+                          ],
+                          "depth": 12710.35
+                        },
+                        "metadata": {
+                          "yes_hash": "987d0e7b6493f62e458ef4169026a3ef72e908f4",
+                          "no_hash": "decfcd38fe6e9486f44d1d02cac820bea06ef853",
+                          "yes_asset_id": "103387297638478419848845173829778666234318361754246705171404252856388527986817",
+                          "no_asset_id": "5667261208653199105878165722033116235267270044023685385040371336013436108451",
+                          "yes_timestamp": "1761955831708",
+                          "no_timestamp": "1761955831708",
+                          "tick_size": "0.001",
+                          "min_order_size": "5",
+                          "neg_risk": true
+                        }
+                      }
+                    ],
+                    "count": 2,
+                    "start_time": "1761895254000",
+                    "end_time": "1761956492000",
+                    "limit": 100
+                  },
+                  "meta": {
+                    "request_time": 101
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "description": "No snapshots found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "code": "NO_SNAPSHOTS_FOUND",
+                    "message": "No orderbook snapshots found for the specified market and time range",
+                    "details": {
+                      "market_id": "643518",
+                      "start_time": "1761895254000",
+                      "end_time": "1761956492000"
+                    },
+                    "timestamp": "2025-11-01T00:22:24.262Z"
+                  },
+                  "meta": {
+                    "request_time": 105
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/trades": {
+      "get": {
+        "tags": [
+          "v2"
+        ],
+        "summary": "Get historical trades",
+        "description": "Retrieve historical trade data for prediction markets on Kalshi and Polymarket. This endpoint allows you to query past trades to analyze trading activity, volume patterns, and market dynamics over time. The endpoint automatically detects the platform based on market ID format (Kalshi tickers start with 'KX', Polymarket uses numeric IDs).",
+        "parameters": [
+          {
+            "name": "market_id",
+            "in": "query",
+            "description": "Platform-native market identifier (Polymarket numeric ID or Kalshi ticker symbol)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "polymarket": {
+                "value": "516710",
+                "description": "Polymarket numeric market ID"
+              },
+              "kalshi": {
+                "value": "KXGOVTCUTS-25-50",
+                "description": "Kalshi market ticker symbol"
+              }
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of trades to return (1-1000). Kalshi API maximum is 100 per request.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Opaque cursor for pagination (from previous response)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "takerOnly",
+            "in": "query",
+            "description": "Filter to taker-only trades (Polymarket only, ignored for Kalshi)",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Historical trades retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "trades": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Trade"
+                          }
+                        },
+                        "pagination": {
+                          "$ref": "#/components/schemas/TradePagination"
+                        },
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "market_id": {
+                              "type": "string"
+                            },
+                            "platform": {
+                              "type": "string",
+                              "enum": ["polymarket", "kalshi"]
+                            },
+                            "request_time": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                },
+                "examples": {
+                  "kalshi": {
+                    "value": {
+                      "data": {
+                        "trades": [
+                          {
+                            "trade_id": "3e02c6be-3d4f-610e-eb37-24ea1a4cde0a",
+                            "platform": "kalshi",
+                            "market_id": "KXGOVTCUTS-25-50",
+                            "timestamp": 1762184718,
+                            "size": 8,
+                            "price": 0.0013,
+                            "side": "buy",
+                            "yes_price": 0.13,
+                            "no_price": 0.87,
+                            "metadata": {
+                              "created_time": "2025-11-03T15:45:18.499636Z",
+                              "yes_price_dollars": "0.1300",
+                              "no_price_dollars": "0.8700"
+                            }
+                          }
+                        ],
+                        "pagination": {
+                          "total": 100,
+                          "limit": 100,
+                          "has_more": true,
+                          "next_cursor": "WzEwMCxbWzEsMSwiRWVoSUtFSUdLRjJiZUYwWFFsUFZCNVpidjQ5QWFEQWluZzZQSUJoRGduOFhaQWciXV1d"
+                        },
+                        "meta": {
+                          "market_id": "KXGOVTCUTS-25-50",
+                          "platform": "kalshi",
+                          "request_time": 111
+                        }
+                      },
+                      "meta": {
+                        "request_time": 111
+                      }
+                    }
+                  },
+                  "polymarket": {
+                    "value": {
+                      "data": {
+                        "trades": [
+                          {
+                            "trade_id": "0x180dcc14cf8f830410f80c35d8556c423b8079f6e6a59cf91c1ab8d495d12da2",
+                            "platform": "polymarket",
+                            "market_id": "516710",
+                            "timestamp": 1762186395,
+                            "size": 100,
+                            "price": 0.964,
+                            "side": "sell",
+                            "outcome": "No",
+                            "transaction_hash": "0x180dcc14cf8f830410f80c35d8556c423b8079f6e6a59cf91c1ab8d495d12da2",
+                            "user": {
+                              "name": "cowcat",
+                              "pseudonym": "Our-Dough",
+                              "profile_image": "https://polymarket-upload.s3.us-east-2.amazonaws.com/profile-image-3609277.png"
+                            },
+                            "metadata": {
+                              "proxyWallet": "0x38e59b36aae31b164200d0cad7c3fe5e0ee795e7",
+                              "asset": "44528029102356085806317866371026691780796471200782980570839327755136990994869",
+                              "conditionId": "0xfa48a99317daef1654d5b03e30557c4222f276657275628d9475e141c64b545d",
+                              "title": "US recession in 2025?",
+                              "slug": "us-recession-in-2025"
+                            }
+                          }
+                        ],
+                        "pagination": {
+                          "total": 5,
+                          "limit": 5,
+                          "has_more": true,
+                          "next_cursor": "WzUsW1swLDFdXV0"
+                        },
+                        "meta": {
+                          "market_id": "516710",
+                          "platform": "polymarket",
+                          "request_time": 724
+                        }
+                      },
+                      "meta": {
+                        "request_time": 724
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/AuthenticationError"
+          },
+          "404": {
+            "description": "Market not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  }
+                },
+                "example": {
+                  "error": {
+                    "code": "MARKET_NOT_FOUND",
+                    "message": "Market INVALID_MARKET not found on any supported platform",
+                    "details": {
+                      "market_id": "INVALID_MARKET",
+                      "polymarket_error": "Market not found",
+                      "kalshi_error": "Failed to fetch trades from Kalshi: Kalshi API error: 404 Not Found"
+                    },
+                    "timestamp": "2025-11-03T16:15:39.295Z"
+                  },
+                  "meta": {
+                    "request_time": 303
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1349,6 +1787,227 @@
           "neg_risk": {
             "type": "boolean",
             "description": "Whether market allows negative risk (Polymarket only)"
+          }
+        }
+      },
+      "HistoricalOrderbookResponse": {
+        "type": "object",
+        "required": ["market_id", "snapshots", "count", "start_time", "end_time", "limit"],
+        "properties": {
+          "market_id": {
+            "type": "string",
+            "description": "Polymarket market ID"
+          },
+          "snapshots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderbookSnapshot"
+            },
+            "description": "Array of historical orderbook snapshots"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of snapshots returned"
+          },
+          "start_time": {
+            "type": "string",
+            "description": "Start time query parameter (Unix timestamp in milliseconds)"
+          },
+          "end_time": {
+            "type": "string",
+            "description": "End time query parameter (Unix timestamp in milliseconds)"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Limit query parameter used"
+          }
+        }
+      },
+      "OrderbookSnapshot": {
+        "type": "object",
+        "required": ["snapshot_id", "market_id", "platform", "timestamp", "yes", "no", "metadata"],
+        "properties": {
+          "snapshot_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this snapshot"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Polymarket market ID"
+          },
+          "platform": {
+            "type": "string",
+            "enum": ["polymarket"],
+            "description": "Platform name (currently only polymarket)"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the snapshot was taken (ISO 8601)"
+          },
+          "yes": {
+            "$ref": "#/components/schemas/OrderbookSide"
+          },
+          "no": {
+            "$ref": "#/components/schemas/OrderbookSide"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/OrderbookSnapshotMetadata"
+          }
+        }
+      },
+      "OrderbookSnapshotMetadata": {
+        "type": "object",
+        "required": ["yes_hash", "no_hash", "yes_asset_id", "no_asset_id", "yes_timestamp", "no_timestamp", "tick_size", "min_order_size", "neg_risk"],
+        "properties": {
+          "yes_hash": {
+            "type": "string",
+            "description": "Hash of YES token orderbook snapshot"
+          },
+          "no_hash": {
+            "type": "string",
+            "description": "Hash of NO token orderbook snapshot"
+          },
+          "yes_asset_id": {
+            "type": "string",
+            "description": "YES token CLOB asset ID"
+          },
+          "no_asset_id": {
+            "type": "string",
+            "description": "NO token CLOB asset ID"
+          },
+          "yes_timestamp": {
+            "type": "string",
+            "description": "YES token orderbook timestamp"
+          },
+          "no_timestamp": {
+            "type": "string",
+            "description": "NO token orderbook timestamp"
+          },
+          "tick_size": {
+            "type": "string",
+            "description": "Minimum price increment"
+          },
+          "min_order_size": {
+            "type": "string",
+            "description": "Minimum order size"
+          },
+          "neg_risk": {
+            "type": "boolean",
+            "description": "Whether negative risk is enabled"
+          }
+        }
+      },
+      "Trade": {
+        "type": "object",
+        "required": ["trade_id", "platform", "market_id", "timestamp", "size", "price", "side"],
+        "properties": {
+          "trade_id": {
+            "type": "string",
+            "description": "Unique trade identifier (UUID for Kalshi, transaction hash for Polymarket)"
+          },
+          "platform": {
+            "type": "string",
+            "enum": ["polymarket", "kalshi"],
+            "description": "Platform name"
+          },
+          "market_id": {
+            "type": "string",
+            "description": "Platform-native market identifier"
+          },
+          "timestamp": {
+            "type": "integer",
+            "description": "Unix timestamp (seconds) when trade occurred"
+          },
+          "size": {
+            "type": "number",
+            "description": "Number of contracts/shares traded"
+          },
+          "price": {
+            "type": "number",
+            "minimum": 0.001,
+            "maximum": 1.0,
+            "description": "Trade price (decimal 0.001-1.000)"
+          },
+          "side": {
+            "type": "string",
+            "enum": ["buy", "sell"],
+            "description": "Trade side"
+          },
+          "yes_price": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0.01,
+            "maximum": 1.0,
+            "description": "Yes price at time of trade (Kalshi only)"
+          },
+          "no_price": {
+            "type": "number",
+            "nullable": true,
+            "minimum": 0.01,
+            "maximum": 1.0,
+            "description": "No price at time of trade (Kalshi only)"
+          },
+          "outcome": {
+            "type": "string",
+            "nullable": true,
+            "description": "Outcome name (e.g., \"Yes\", \"No\") - Polymarket only"
+          },
+          "transaction_hash": {
+            "type": "string",
+            "nullable": true,
+            "description": "Blockchain transaction hash (Polymarket only)"
+          },
+          "user": {
+            "$ref": "#/components/schemas/TradeUser",
+            "nullable": true,
+            "description": "User information (Polymarket only)"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Platform-specific additional data"
+          }
+        }
+      },
+      "TradeUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "pseudonym": {
+            "type": "string",
+            "description": "User's pseudonym"
+          },
+          "profile_image": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to user's profile image"
+          }
+        }
+      },
+      "TradePagination": {
+        "type": "object",
+        "required": ["total", "limit", "has_more"],
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Number of trades returned in this response"
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Requested limit (max trades per page)"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether more trades are available"
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for next page (null if no more pages)"
           }
         }
       }
