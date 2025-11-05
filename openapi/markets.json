@@ -411,6 +411,9 @@
     },
     "/markets/{market_id}/orderbook": {
       "get": {
+        "x-mintlify": {
+          "hide": true
+        },
         "tags": [
           "v2"
         ],
@@ -610,6 +613,9 @@
     },
     "/historical-orderbook": {
       "get": {
+        "x-mintlify": {
+          "hide": true
+        },
         "tags": [
           "v2"
         ],
@@ -858,16 +864,6 @@
             "required": false,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "takerOnly",
-            "in": "query",
-            "description": "Filter to taker-only trades (Polymarket only, ignored for Kalshi)",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
             }
           }
         ],
