@@ -18,7 +18,7 @@ Most list endpoints support two query parameters:
 
 ```bash
 curl "https://api.polyrouter.io/functions/v1/markets?limit=10" \
-  -H "X-API-Key: YOUR_API_KEY"
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 The response includes a `pagination` object:
@@ -41,7 +41,7 @@ Use the `next_cursor` from the previous response:
 
 ```bash
 curl "https://api.polyrouter.io/functions/v1/markets?limit=10&cursor=eyJwbGF0Zm9ybXMiOnsia2Fsc2hpIjp7..." \
-  -H "X-API-Key: YOUR_API_KEY"
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 ## Complete Example
@@ -61,7 +61,7 @@ async function fetchAllMarkets() {
     
     const response = await fetch(url, {
       headers: {
-        'X-API-Key': 'YOUR_API_KEY'
+        'X-API-Key': '5fa709a5-0634-44c3-a991-57166d3c376d'
       }
     });
     
@@ -85,7 +85,7 @@ def fetch_all_markets():
     cursor = None
     has_more = True
     
-    headers = {'X-API-Key': 'YOUR_API_KEY'}
+    headers = {'X-API-Key': '5fa709a5-0634-44c3-a991-57166d3c376d'}
     
     while has_more:
         url = 'https://api.polyrouter.io/functions/v1/markets'
@@ -107,11 +107,11 @@ def fetch_all_markets():
 ```bash
 # First page
 curl "https://api.polyrouter.io/functions/v1/markets?limit=25" \
-  -H "X-API-Key: YOUR_API_KEY"
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 
 # Next page (use next_cursor from response)
 curl "https://api.polyrouter.io/functions/v1/markets?limit=25&cursor=eyJ..." \
-  -H "X-API-Key: YOUR_API_KEY"
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
   </Tab>
 </Tabs>

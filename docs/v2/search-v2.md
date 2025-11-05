@@ -52,25 +52,25 @@ GET /search-v2
 
 #### Basic Search
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2?query=trump&limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/search-v2?query=trump&limit=10" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Platform-Specific Search
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2?query=election&platform=polymarket&limit=5" \
+curl -X GET "https://api.polyrouter.io/functions/v1/search-v2?query=election&platform=polymarket&limit=5" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Multi-Platform Search
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2?query=trump&platform=polymarket,kalshi&limit=15" \
+curl -X GET "https://api.polyrouter.io/functions/v1/search-v2?query=trump&platform=polymarket,kalshi&limit=15" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Pagination with Cursor
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2?query=trump&platform=kalshi&limit=10&cursor=eyJjdXJzb3IiOiIxMjM0NTY3ODkwIn0" \
+curl -X GET "https://api.polyrouter.io/functions/v1/search-v2?query=trump&platform=kalshi&limit=10&cursor=eyJjdXJzb3IiOiIxMjM0NTY3ODkwIn0" \
   -H "X-API-Key: your-api-key" \
 ```
 
@@ -439,7 +439,7 @@ const findTrending = async () => {
 ```javascript
 const searchV2 = async (params = {}) => {
   const queryString = new URLSearchParams(params).toString();
-  const response = await fetch(`https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2?${queryString}`, {
+  const response = await fetch(`https://api.polyrouter.io/functions/v1/search-v2?${queryString}`, {
     headers: {
       'X-API-Key': 'your-api-key',
     }
@@ -478,7 +478,7 @@ def search_v2(params=None):
     if params is None:
         params = {}
     
-    url = "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2"
+    url = "https://api.polyrouter.io/functions/v1/search-v2"
     headers = {
         "X-API-Key": "your-api-key",
     }
@@ -505,17 +505,17 @@ for result in results["markets"]:
 ### cURL
 ```bash
 # Basic search
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2?query=trump&limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/search-v2?query=trump&limit=10" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[] | {platform: .platform, title: .title, tags: .tags}'
 
 # Platform-specific search
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2?query=election&platform=polymarket&limit=20" \
+curl -X GET "https://api.polyrouter.io/functions/v1/search-v2?query=election&platform=polymarket&limit=20" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[] | {title: .title, volume: .metadata.volume, marketCount: .metadata.marketCount}'
 
 # Search with pagination
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2?query=bitcoin&limit=10&offset=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/search-v2?query=bitcoin&limit=10&offset=10" \
   -H "X-API-Key: your-api-key" \
   | jq '.pagination'
 ```

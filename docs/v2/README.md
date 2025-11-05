@@ -64,7 +64,7 @@ The v2 API architecture eliminates database dependencies by directly proxying ex
 All v2 endpoints require authentication using only your API key:
 
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2" \
   -H "X-API-Key: your-api-key"
 ```
 
@@ -225,23 +225,23 @@ Each v2 endpoint provides a health check:
 
 ```bash
 # Markets API health
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2/health" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2/health" \
   -H "X-API-Key: your-api-key"
 
 # Events API health
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2/health" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2/health" \
   -H "X-API-Key: your-api-key"
 
 # Series API health
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2/health" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2/health" \
   -H "X-API-Key: your-api-key"
 
 # Search API health
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/search-v2/health" \
+curl -X GET "https://api.polyrouter.io/functions/v1/search-v2/health" \
   -H "X-API-Key: your-api-key"
 
 # Price History API health
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/price-history-v2/health" \
+curl -X GET "https://api.polyrouter.io/functions/v1/price-history-v2/health" \
   -H "X-API-Key: your-api-key"
 ```
 

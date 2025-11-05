@@ -54,31 +54,31 @@ GET /series-v2
 
 #### Basic Request
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2?limit=10" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Platform Filtering
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?platform=polymarket&limit=20" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2?platform=polymarket&limit=20" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Category Filtering
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?category=politics&limit=15" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2?category=politics&limit=15" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Search Functionality
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?search=trump&limit=25" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2?search=trump&limit=25" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Combined Filters
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?platform=polymarket&category=politics&search=election&limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2?platform=polymarket&category=politics&search=election&limit=10" \
   -H "X-API-Key: your-api-key" \
 ```
 
@@ -263,7 +263,7 @@ GET /series-v2/{series_id}
 
 #### Example Request
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2/2" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2/2" \
   -H "X-API-Key: your-api-key" \
 ```
 
@@ -601,7 +601,7 @@ const findSeriesByTopic = async (topic) => {
 ```javascript
 const fetchSeriesV2 = async (params = {}) => {
   const queryString = new URLSearchParams(params).toString();
-  const response = await fetch(`https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?${queryString}`, {
+  const response = await fetch(`https://api.polyrouter.io/functions/v1/series-v2?${queryString}`, {
     headers: {
       'X-API-Key': 'your-api-key',
     }
@@ -635,7 +635,7 @@ def fetch_series_v2(params=None):
     if params is None:
         params = {}
     
-    url = "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2"
+    url = "https://api.polyrouter.io/functions/v1/series-v2"
     headers = {
         "X-API-Key": "your-api-key",
     }
@@ -662,22 +662,22 @@ for series_item in series["series"]:
 ### cURL
 ```bash
 # Basic series request
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2?limit=10" \
   -H "X-API-Key: your-api-key" \
   | jq '.series[] | {id: .id, title: .title, platform: .platform, category: .category}'
 
 # Platform-specific series
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?platform=polymarket&limit=20" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2?platform=polymarket&limit=20" \
   -H "X-API-Key: your-api-key" \
   | jq '.series[] | {title: .title, events: (.events | length), markets: (.markets | length)}'
 
 # Individual series lookup
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2/2" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2/2" \
   -H "X-API-Key: your-api-key" \
   | jq '.series[0] | {title: .title, platform: .platform, events: (.events | length), markets: (.markets | length)}'
 
 # Search series
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/series-v2?search=trump&limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/series-v2?search=trump&limit=10" \
   -H "X-API-Key: your-api-key" \
   | jq '.series[] | {title: .title, platform: .platform, category: .category}'
 ```

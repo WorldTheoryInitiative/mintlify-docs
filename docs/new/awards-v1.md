@@ -75,31 +75,31 @@ To use the Awards API, follow this two-step process:
 ### Basic Workflow
 ```bash
 # Step 1: Get available awards and their IDs
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-awards-v1?league=nfl" \
+curl -X GET "https://api.polyrouter.io/functions/v1/list-awards-v1?league=nfl" \
   -H "X-API-Key: your-api-key"
 
 # Response includes: { "id": "nfl_mvp_2025", ... }
 
 # Step 2: Get detailed odds for NFL MVP
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/awards-v1/nfl_mvp_2025" \
+curl -X GET "https://api.polyrouter.io/functions/v1/awards-v1/nfl_mvp_2025" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Get NFL MVP Odds (All Platforms)
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/awards-v1/nfl_mvp_2025" \
+curl -X GET "https://api.polyrouter.io/functions/v1/awards-v1/nfl_mvp_2025" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Get NFL MVP with Decimal Odds
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/awards-v1/nfl_mvp_2025?odds_format=decimal" \
+curl -X GET "https://api.polyrouter.io/functions/v1/awards-v1/nfl_mvp_2025?odds_format=decimal" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Filter by Platform
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/awards-v1/nfl_mvp_2025?platform=kalshi" \
+curl -X GET "https://api.polyrouter.io/functions/v1/awards-v1/nfl_mvp_2025?platform=kalshi" \
   -H "X-API-Key: your-api-key"
 ```
 
@@ -506,7 +506,7 @@ console.log(`Expected Value: ${(ev * 100).toFixed(2)}%`);
 Always start with `/list-awards-v1` to discover available awards:
 
 ```bash
-curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-awards-v1?league=nfl"
+curl "https://api.polyrouter.io/functions/v1/list-awards-v1?league=nfl"
 ```
 
 ### 2. Choose Appropriate Odds Format

@@ -7,7 +7,7 @@ The User Profiles API provides access to user profile information and trading hi
 ## Base URL
 
 ```
-https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/profile
+https://api.polyrouter.io/functions/v1/profile
 ```
 
 ## Authentication
@@ -16,7 +16,7 @@ All endpoints require API key authentication via the `X-API-Key` header:
 
 ```bash
 curl -H "X-API-Key: your-api-key" \
-  "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/profile/info?platform=kalshi&user=chronicaria"
+  "https://api.polyrouter.io/functions/v1/profile/info?platform=kalshi&user=chronicaria"
 ```
 
 ## Endpoints
@@ -38,11 +38,11 @@ Retrieve user profile information and optional metrics.
 ```bash
 # Kalshi profile
 curl -H "X-API-Key: your-api-key" \
-  "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/profile/info?platform=kalshi&user=witnessforhire"
+  "https://api.polyrouter.io/functions/v1/profile/info?platform=kalshi&user=witnessforhire"
 
 # Polymarket profile with metrics
 curl -H "X-API-Key: your-api-key" \
-  "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/profile/info?platform=polymarket&user=0xA6d0793b7aC2E3e7ECa1730c9B8528fb9a67dB8d&include_metrics=true"
+  "https://api.polyrouter.io/functions/v1/profile/info?platform=polymarket&user=0xA6d0793b7aC2E3e7ECa1730c9B8528fb9a67dB8d&include_metrics=true"
 ```
 
 **Response Format:**

@@ -51,31 +51,31 @@ To use the Futures API, follow this two-step process:
 ### Basic Workflow
 ```bash
 # Step 1: Get available futures and their IDs
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-futures-v1?league=nfl" \
+curl -X GET "https://api.polyrouter.io/functions/v1/list-futures-v1?league=nfl" \
   -H "X-API-Key: your-api-key"
 
 # Response includes: { "id": "nfl_superbowl_2025", ... }
 
 # Step 2: Get detailed odds for Super Bowl
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/futures-v1/nfl_superbowl_2025" \
+curl -X GET "https://api.polyrouter.io/functions/v1/futures-v1/nfl_superbowl_2025" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Get Super Bowl Odds (All Platforms)
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/futures-v1/nfl_superbowl_2025" \
+curl -X GET "https://api.polyrouter.io/functions/v1/futures-v1/nfl_superbowl_2025" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Filter by Specific Platform
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/futures-v1/nfl_superbowl_2025?platform=polymarket" \
+curl -X GET "https://api.polyrouter.io/functions/v1/futures-v1/nfl_superbowl_2025?platform=polymarket" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Get Division Winner Odds
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/futures-v1/nfl_afc_east_2025" \
+curl -X GET "https://api.polyrouter.io/functions/v1/futures-v1/nfl_afc_east_2025" \
   -H "X-API-Key: your-api-key"
 ```
 
@@ -334,7 +334,7 @@ async function getFuture(futureId, options = {}) {
   const params = new URLSearchParams(options);
   
   const response = await fetch(
-    `https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/futures-v1/${futureId}?${params}`,
+    `https://api.polyrouter.io/functions/v1/futures-v1/${futureId}?${params}`,
     {
       headers: {
         'X-API-Key': process.env.API_KEY
@@ -363,7 +363,7 @@ def get_future(future_id, **kwargs):
     params = kwargs
     
     response = requests.get(
-        f'https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/futures-v1/{future_id}',
+        f'https://api.polyrouter.io/functions/v1/futures-v1/{future_id}',
         params=params,
         headers={'X-API-Key': os.getenv('API_KEY')}
     )

@@ -6,9 +6,9 @@ description: "The unified API for prediction markets"
 <Warning>
   **Development Environment:** This documentation is using staging credentials and pointing to the development API. 
   
-  **Base URL:** `https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1`
+  **Base URL:** `https://api.polyrouter.io/functions/v1`
   
-  **Test API Key:** `test_1234567890abcdef`
+  **Test API Key:** `5fa709a5-0634-44c3-a991-57166d3c376d`
 </Warning>
 
 
@@ -67,14 +67,14 @@ PolyRouter provides **unified API access to 7 prediction market platforms**: Pol
 <CodeGroup>
 
 ```bash cURL
-curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?platform=polymarket&limit=5" \
-  -H "X-API-Key: test_1234567890abcdef"
+curl "https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=5" \
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 ```javascript JavaScript
 const response = await fetch(
-  'https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?platform=polymarket&limit=5',
-  { headers: { 'X-API-Key': 'test_1234567890abcdef' } }
+  'https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=5',
+  { headers: { 'X-API-Key': '5fa709a5-0634-44c3-a991-57166d3c376d' } }
 );
 
 const data = await response.json();
@@ -109,12 +109,12 @@ data.markets.forEach(market => {
 
 ```bash
 # Find today's games
-curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-games-v1?league=nfl&limit=5" \
-  -H "X-API-Key: test_1234567890abcdef"
+curl "https://api.polyrouter.io/functions/v1/list-games-v1?league=nfl&limit=5" \
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 
 # Get odds for a specific game
-curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/games-v1/BUFvKC20251020" \
-  -H "X-API-Key: test_1234567890abcdef"
+curl "https://api.polyrouter.io/functions/v1/games-v1/BUFvKC20251020" \
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 <Info>
@@ -124,8 +124,8 @@ curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/games-v1/BUFvKC20251
 ### Query Price History
 
 ```bash
-curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/price-history-v2?market_ids=516710&interval=1h&limit=24" \
-  -H "X-API-Key: test_1234567890abcdef"
+curl "https://api.polyrouter.io/functions/v1/price-history-v2?market_ids=516710&interval=1h&limit=24" \
+  -H "X-API-Key: 5fa709a5-0634-44c3-a991-57166d3c376d"
 ```
 
 ## Supported Platforms

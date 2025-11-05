@@ -55,31 +55,31 @@ GET /events-v2
 
 #### Basic Request
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2?limit=10" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Platform Filtering
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?platform=polymarket&limit=20" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2?platform=polymarket&limit=20" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Search Functionality
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?search=nba&limit=15" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2?search=nba&limit=15" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Volume Filtering
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?min_volume=1000&limit=25" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2?min_volume=1000&limit=25" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Combined Filters
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?platform=polymarket&search=sports&min_volume=5000&limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2?platform=polymarket&search=sports&min_volume=5000&limit=10" \
   -H "X-API-Key: your-api-key" \
 ```
 
@@ -295,7 +295,7 @@ GET /events-v2/{event_id}
 
 #### Example Request
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2/2890" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2/2890" \
   -H "X-API-Key: your-api-key" \
 ```
 
@@ -616,7 +616,7 @@ const findEventsByTopic = async (topic) => {
 ```javascript
 const fetchEventsV2 = async (params = {}) => {
   const queryString = new URLSearchParams(params).toString();
-  const response = await fetch(`https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?${queryString}`, {
+  const response = await fetch(`https://api.polyrouter.io/functions/v1/events-v2?${queryString}`, {
     headers: {
       'X-API-Key': 'your-api-key',
     }
@@ -650,7 +650,7 @@ def fetch_events_v2(params=None):
     if params is None:
         params = {}
     
-    url = "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2"
+    url = "https://api.polyrouter.io/functions/v1/events-v2"
     headers = {
         "X-API-Key": "your-api-key",
     }
@@ -677,22 +677,22 @@ for event in events["markets"]:
 ### cURL
 ```bash
 # Basic events request
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2?limit=10" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[] | {id: .id, title: .title, platform: .platform, total_volume: .total_volume}'
 
 # Platform-specific events
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?platform=polymarket&limit=20" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2?platform=polymarket&limit=20" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[] | {title: .title, total_volume: .total_volume, market_count: .market_count}'
 
 # Individual event lookup
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2/2890" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2/2890" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[0] | {title: .title, platform: .platform, total_volume: .total_volume, description: .description}'
 
 # Search events
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/events-v2?search=nba&limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/events-v2?search=nba&limit=10" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[] | {title: .title, platform: .platform, total_volume: .total_volume}'
 ```

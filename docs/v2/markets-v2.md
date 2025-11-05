@@ -58,31 +58,31 @@ GET /markets-v2
 
 #### Basic Request
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?limit=10" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Platform Filtering
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?platform=polymarket&limit=20" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&limit=20" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Status Filtering
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?status=open&limit=15" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?status=open&limit=15" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Date Range Filtering
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?start_date_min=2025-01-01&end_date_max=2025-12-31&limit=25" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?start_date_min=2025-01-01&end_date_max=2025-12-31&limit=25" \
   -H "X-API-Key: your-api-key" \
 ```
 
 #### Query Parameter Individual Lookup
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?market_id=516710&platform=polymarket" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?market_id=516710&platform=polymarket" \
   -H "X-API-Key: your-api-key" \
 ```
 
@@ -223,7 +223,7 @@ GET /markets-v2/{market_id}
 
 #### Example Request
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2/516710" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2/516710" \
   -H "X-API-Key: your-api-key" \
 ```
 
@@ -235,7 +235,7 @@ GET /markets-v2?market_id={market_id}&platform={platform}
 
 #### Example Request
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?market_id=KXTRUMPRESIGN&platform=kalshi" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?market_id=KXTRUMPRESIGN&platform=kalshi" \
   -H "X-API-Key: your-api-key" \
 ```
 
@@ -675,7 +675,7 @@ const findUpcomingMarkets = async () => {
 ```javascript
 const fetchMarketsV2 = async (params = {}) => {
   const queryString = new URLSearchParams(params).toString();
-  const response = await fetch(`https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?${queryString}`, {
+  const response = await fetch(`https://api.polyrouter.io/functions/v1/markets-v2?${queryString}`, {
     headers: {
       'X-API-Key': 'your-api-key',
     }
@@ -712,7 +712,7 @@ def fetch_markets_v2(params=None):
     if params is None:
         params = {}
     
-    url = "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2"
+    url = "https://api.polyrouter.io/functions/v1/markets-v2"
     headers = {
         "X-API-Key": "your-api-key",
     }
@@ -741,22 +741,22 @@ for market in markets["markets"]:
 ### cURL
 ```bash
 # Basic markets request
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?limit=10" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?limit=10" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[] | {id: .id, title: .title, platform: .platform, volume_24h: .volume_24h}'
 
 # Platform-specific markets
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?platform=polymarket&status=open&limit=20" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?platform=polymarket&status=open&limit=20" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[] | {title: .title, current_prices: .current_prices, volume_total: .volume_total}'
 
 # Individual market lookup (path-based)
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2/516710" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2/516710" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[0] | {title: .title, status: .status, volume_total: .volume_total, source_url: .source_url}'
 
 # Individual market lookup (query parameter)
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets-v2?market_id=KXTRUMPRESIGN&platform=kalshi" \
+curl -X GET "https://api.polyrouter.io/functions/v1/markets-v2?market_id=KXTRUMPRESIGN&platform=kalshi" \
   -H "X-API-Key: your-api-key" \
   | jq '.markets[0] | {title: .title, status: .status, volume_total: .volume_total, source_url: .source_url}'
 ```

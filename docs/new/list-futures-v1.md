@@ -30,19 +30,19 @@ The List Futures API v1 offers:
 
 ### Get All NFL Futures
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-futures-v1?league=nfl" \
+curl -X GET "https://api.polyrouter.io/functions/v1/list-futures-v1?league=nfl" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Get Only Championship Futures
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-futures-v1?league=nfl&future_type=championship" \
+curl -X GET "https://api.polyrouter.io/functions/v1/list-futures-v1?league=nfl&future_type=championship" \
   -H "X-API-Key: your-api-key"
 ```
 
 ### Get Division Winners
 ```bash
-curl -X GET "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/list-futures-v1?league=nfl&future_type=division" \
+curl -X GET "https://api.polyrouter.io/functions/v1/list-futures-v1?league=nfl&future_type=division" \
   -H "X-API-Key: your-api-key"
 ```
 
