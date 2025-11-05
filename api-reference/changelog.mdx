@@ -15,12 +15,12 @@ description: "API updates and new features"
   - **`GET /profile/info`**: Retrieve user profile data from Kalshi and Polymarket
   - **`GET /profile/trades`**: Get user trade history with pagination support
 - **Historical Trades Endpoint**: Added **`GET /trades`** to fetch historical trade data for Kalshi and Polymarket markets
-- **Changelog Page**: Added comprehensive changelog documentation to track all API updates
+- **Changelog Page**: Added a changelog page to track all API updates
 
 ### Improvements
 
 - **Pagination Fixed**: Standardized pagination across all endpoints with consistent cursor-based navigation
-- **Kalshi Market Filtering**: Automatically filter out MVE (Minimum Viable Event) markets from Kalshi results
+- **Kalshi Market Filtering**: Automatically filter out MVE markets from Kalshi results
 - **Volume & Liquidity Data**: Restored volume and liquidity information for Kalshi markets
 - **Request Limits**: Updated maximum limit to 25 items per request for markets, series, and events endpoints for better performance
 
@@ -34,7 +34,7 @@ description: "API updates and new features"
 ### Breaking Changes
 
 - Maximum limit reduced from 100 to 25 for `/markets`, `/events`, and `/series` endpoints
-- Requests exceeding limit=25 will be capped at 25
+- Requests exceeding limit=25 will be capped at 25. This is a momentary change to make performance consistent.
 
 ---
 
