@@ -17,8 +17,8 @@ Most list endpoints support two query parameters:
 ## Making Your First Request
 
 ```bash
-curl "https://api.polyrouter.io/functions/v1/markets?limit=10" \
-  -H "X-API-Key: YOUR_API_KEY"
+curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets?limit=10" \
+  -H "X-API-Key: test_1234567890abcdef"
 ```
 
 The response includes a `pagination` object:
@@ -40,8 +40,8 @@ The response includes a `pagination` object:
 Use the `next_cursor` from the previous response:
 
 ```bash
-curl "https://api.polyrouter.io/functions/v1/markets?limit=10&cursor=eyJwbGF0Zm9ybXMiOnsia2Fsc2hpIjp7..." \
-  -H "X-API-Key: YOUR_API_KEY"
+curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets?limit=10&cursor=eyJwbGF0Zm9ybXMiOnsia2Fsc2hpIjp7..." \
+  -H "X-API-Key: test_1234567890abcdef"
 ```
 
 ## Complete Example
@@ -56,12 +56,12 @@ async function fetchAllMarkets() {
 
   while (hasMore) {
     const url = cursor 
-      ? `https://api.polyrouter.io/functions/v1/markets?cursor=${cursor}&limit=25`
-      : `https://api.polyrouter.io/functions/v1/markets?limit=25`;
+      ? `https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets?cursor=${cursor}&limit=25`
+      : `https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets?limit=25`;
     
     const response = await fetch(url, {
       headers: {
-        'X-API-Key': 'YOUR_API_KEY'
+        'X-API-Key': 'test_1234567890abcdef'
       }
     });
     
@@ -85,10 +85,10 @@ def fetch_all_markets():
     cursor = None
     has_more = True
     
-    headers = {'X-API-Key': 'YOUR_API_KEY'}
+    headers = {'X-API-Key': 'test_1234567890abcdef'}
     
     while has_more:
-        url = 'https://api.polyrouter.io/functions/v1/markets'
+        url = 'https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets'
         params = {'limit': 25}
         if cursor:
             params['cursor'] = cursor
@@ -106,12 +106,12 @@ def fetch_all_markets():
   <Tab title="cURL">
 ```bash
 # First page
-curl "https://api.polyrouter.io/functions/v1/markets?limit=25" \
-  -H "X-API-Key: YOUR_API_KEY"
+curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets?limit=25" \
+  -H "X-API-Key: test_1234567890abcdef"
 
 # Next page (use next_cursor from response)
-curl "https://api.polyrouter.io/functions/v1/markets?limit=25&cursor=eyJ..." \
-  -H "X-API-Key: YOUR_API_KEY"
+curl "https://lsplqyqiubvctfpfnukr.supabase.co/functions/v1/markets?limit=25&cursor=eyJ..." \
+  -H "X-API-Key: test_1234567890abcdef"
 ```
   </Tab>
 </Tabs>
