@@ -256,7 +256,7 @@
           "v2"
         ],
         "summary": "Get price history",
-        "description": "Retrieve historical price data using platform-specific market identifiers. This endpoint uses platform-native IDs and fetches data directly from platform APIs for improved performance. Currently, only Polymarket, Kalshi, and Limitless are supported.",
+        "description": "Retrieve historical price data using platform-specific market identifiers. This endpoint uses platform-native IDs and fetches data directly from platform APIs for improved performance. Currently, only Polymarket, Kalshi, and Limitless are supported. Make sure your start and end timestamps are WITHIN the market's creation time and current time.",
         "parameters": [
           {
             "name": "market_ids",
